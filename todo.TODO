@@ -1,0 +1,8 @@
+ Todos:
+  ☐ rewrite protractor native tests into proquery
+  ☐ support KEYS in .val
+
+
+  Prior Arts:
+   ☐ https://github.com/angular/protractor/issues/397
+   ☐ 

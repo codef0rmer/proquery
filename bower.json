@@ -1,0 +1,27 @@
+{
+  "name": "proquery",
+  "main": "index.js",
+  "version": "0.0.1",
+  "authors": [
+    "Amit Gharat <amit.2006.it@gmail.com>"
+  ],
+  "description": "jQuery like syntactical sugar for Protractor",
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "protractor",
+    "node"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "angular": "~1.4.4"
+  }
+}

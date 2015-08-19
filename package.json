@@ -4,11 +4,14 @@
   "description": "jQuery like syntactical sugar for Protractor",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/protractor/bin/protractor conf.js"
   },
   "keywords": [
     "protractor"
   ],
-  "author": "Amit Gharat",
-  "license": "MIT"
+  "author": "Amit Gharat <amit.2006.it@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "protractor": "^2.1.0"
+  }
 }
