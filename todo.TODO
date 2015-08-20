@@ -1,6 +1,6 @@
  Todos:
   ☐ rewrite protractor native tests into proquery
-  ☐ support KEYS in .val
+  ☐ support Keyboard Shortcut in .val
 
 
   Prior Arts:

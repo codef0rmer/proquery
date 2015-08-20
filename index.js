@@ -9,7 +9,7 @@ module.exports = function(selector) {
   }
 
   $p.val = function(value) {
-    return value ? this.sendKeys(value) : this.getText();
+    return value ? this.sendKeys(value) : !!arrBindings ? this.getText() : this.getAttribute('value');
   };
 
   return $p;
