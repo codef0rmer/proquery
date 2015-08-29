@@ -12,11 +12,11 @@ exports.config = {
 
   // Spec patterns are relative to the current working directly when
   // protractor is called.
-  specs: ['tests/specs.js'],
+  specs: ['tests/spec.js'],
 
   // A base URL for your application under test. Calls to protractor.get()
   // with relative paths will be prepended with this.
-  baseUrl: 'http://localhost/side-projects/proquery/',
+  baseUrl: 'http://localhost:8081/',
 
   // Options to be passed to Jasmine.
   jasmineNodeOpts: {

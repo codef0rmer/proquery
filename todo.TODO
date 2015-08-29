@@ -2,7 +2,11 @@
   ☐ rewrite protractor native tests into proquery
   ☐ support Keyboard Shortcut in .val
 
+Top Priority:
+ ✔ Run Protractor tests locally using npm test (currently getting jshint errors) @done (15-08-22 00:54)
+ ✔ Modify testapp tests for Proquery  @done (15-08-22 00:54)
+ ☐ use xpath for complex jquery selectors
 
-  Prior Arts:
+Prior Arts:
    ☐ https://github.com/angular/protractor/issues/397
    ☐ 
