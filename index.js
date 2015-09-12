@@ -1,5 +1,7 @@
 module.exports = function(selector) {
   var init = function(selector, context) {
+    if (typeof selector === 'object') return exposePublicAPIs(selector);
+
     var $p,
         baseSelector = selector.split(':')[0],
         psuedoSelector = selector.split(':')[1],
@@ -40,7 +42,11 @@ module.exports = function(selector) {
       $p = $p.last();
       $p.length = $p.isPresent().then(function() { return 1; }, function() { return 0; });
     } else {
-      $p.length = $p.count().then(function(length) { return length; }, function() { return 0; });
+      try {
+        $p.length = $p.count().then(function(length) { return length; }, function() { return 0; });
+      } catch(e) {
+        $p.length = $p.isPresent().then(function() { return 1; }, function() { return 0; });
+      }
     }
 
     $p.val = function(value) {
