@@ -1,264 +1,354 @@
 var $p = require('../../../index.js');
-var util = require('util');
 
-// describe('ElementFinder', function() {
-//   beforeEach(function() {
-//     // Clear everything between each test.
-//     browser.driver.get('about:blank');
-//   });
+describe('ElementFinder', function() {
+  beforeEach(function() {
+    // Clear everything between each test.
+    browser.driver.get('about:blank');
+  });
 
-//   it('should return the same result as browser.findElement', function() {
-//     browser.get('index.html#/form');
-//     // var nameByElement = element(by.binding('username'));
-//     var nameByElement = $p('{{username}}');
+  it('should return the same result as browser.findElement', function() {
+    browser.get('index.html#/form');
+    // var nameByElement = element(by.binding('username'));
+    var nameByElement = $p('{{username}}');
 
-//     // expect(nameByElement.getText()).toEqual(browser.findElement(by.binding('username')).getText());
-//     expect(nameByElement.text()).toEqual(browser.findElement(by.binding('username')).getText());
-//   });
+    // expect(nameByElement.getText()).toEqual(browser.findElement(by.binding('username')).getText());
+    expect(nameByElement.text()).toEqual(browser.findElement(by.binding('username')).getText());
+  });
 
-//   it('should wait to grab the WebElement until a method is called', function() {
-//     // These should throw no error before a page is loaded.
-//     // var usernameInput = element(by.model('username'));
-//     var usernameInput = $p('[ng-model="username"]');
-//     // var name = element(by.binding('username'));
-//     var name = $p('{{username}}');
+  it('should wait to grab the WebElement until a method is called', function() {
+    // These should throw no error before a page is loaded.
+    // var usernameInput = element.all(by.model('username'));
+    var usernameInput = $p('[ng-model="username"]');
+    // var name = element(by.binding('username'));
+    var name = $p('{{username}}');
 
-//     browser.get('index.html#/form');
+    browser.get('index.html#/form');
 
-//     // expect(name.getText()).toEqual('Anon');
-//     expect(name.text()).toEqual('Anon');
+    // expect(name.getText()).toEqual('Anon');
+    expect(name.text()).toEqual('Anon');
 
-//     // usernameInput.clear();
-//     usernameInput.val('');
-//     // usernameInput.sendKeys('Jane');
-//     usernameInput.val('Jane');
-//     // expect(name.getText()).toEqual('Jane');
-//     expect(name.text()).toEqual('Jane');
-//   });
+    // usernameInput.clear();
+    usernameInput.val('');
+    // usernameInput.sendKeys('Jane');
+    usernameInput.val('Jane');
+    // expect(name.getText()).toEqual('Jane');
+    expect(name.text()).toEqual('Jane');
+  });
 
-//   it('should chain element actions', function() {
-//     browser.get('index.html#/form');
+  it('should chain element actions', function() {
+    browser.get('index.html#/form');
 
-//     // var usernameInput = element(by.model('username'));
-//     var usernameInput = $p('[ng-model="username"]');
-//     // var name = element(by.binding('username'));
-//     var name = $p('{{username}}');
+    // var usernameInput = element(by.model('username'));
+    var usernameInput = $p('[ng-model="username"]');
+    // var name = element(by.binding('username'));
+    var name = $p('{{username}}');
 
-//     // expect(name.getText()).toEqual('Anon');
-//     expect(name.text()).toEqual('Anon');
+    // expect(name.getText()).toEqual('Anon');
+    expect(name.text()).toEqual('Anon');
 
-//     // usernameInput.clear().sendKeys('Jane');
-//     usernameInput.val('').val('Jane');
-//     // expect(name.getText()).toEqual('Jane');
-//     expect(name.text()).toEqual('Jane');
-//   });
+    // usernameInput.clear().sendKeys('Jane');
+    usernameInput.val('Jane');
+    // expect(name.getText()).toEqual('Jane');
+    expect(name.text()).toEqual('Jane');
+  });
 
-//   it('chained call should wait to grab the WebElement until a method is called', function() {
-//     // These should throw no error before a page is loaded.
-//     // var reused = element(by.id('baz')).element(by.binding('item.reusedBinding'));
-//     // var reused = $p('#baz').find('{{item.reusedBinding}}');
-//     expect($p('#baz').length).toBe(1);
-//     // browser.get('index.html#/conflict');
+  it('chained call should wait to grab the WebElement until a method is called', function() {
+    // These should throw no error before a page is loaded.
+    // var reused = element(by.id('baz')).element(by.binding('item.reusedBinding'));
+    var reused = $p('#baz:first').find('{{item.reusedBinding}}:first');
+    browser.get('index.html#/conflict');
 
-//     // // expect(reused.getText()).toEqual('Inner: inner');
-//     // expect(reused.text()).toEqual('Inner: inner');
-//     // // expect(reused.isPresent()).toBe(true);
-//     // expect(reused.length).toBe(1);
-//   });
+    // expect(reused.getText()).toEqual('Inner: inner');
+    expect(reused.text()).toEqual('Inner: inner');
+    // expect(reused.isPresent()).toBe(true);
+    expect(reused.is(':visible')).toBe(true);
+  });
 
-//   // it('should differentiate elements with the same binding by chaining', function() {
-//   //   browser.get('index.html#/conflict');
+  it('should differentiate elements with the same binding by chaining', function() {
+    browser.get('index.html#/conflict');
 
-//   //   // var outerReused = element(by.binding('item.reusedBinding'));
-//   //   var outerReused = $p('{{item.reusedBinding}}');
-//   //   // var innerReused = element(by.id('baz')).element(by.binding('item.reusedBinding'));
-//   //   var innerReused = $p('#baz').find('{{item.reusedBinding}}');
+    // var outerReused = element(by.binding('item.reusedBinding'));
+    var outerReused = $p('{{item.reusedBinding}}:first');
+    // var innerReused = element(by.id('baz')).element(by.binding('item.reusedBinding'));
+    var innerReused = $p('#baz:first').find('{{item.reusedBinding}}:first');
 
-//   //   // expect(outerReused.getText()).toEqual('Outer: outer');
-//   //   expect(outerReused.text()).toEqual('Outer: outer');
-//   //   // expect(innerReused.getText()).toEqual('Inner: inner');
-//   //   expect(innerReused.text()).toEqual('Inner: inner');
-//   // });
+    // expect(outerReused.getText()).toEqual('Outer: outer');
+    expect(outerReused.text()).toEqual('Outer: outer');
+    // expect(innerReused.getText()).toEqual('Inner: inner');
+    expect(innerReused.text()).toEqual('Inner: inner');
+  });
 
-//   // it('should chain deeper than 2', function() {
-//   //   // These should throw no error before a page is loaded.
-//   //   // var reused = element(by.css('body')).element(by.id('baz')).
-//   //   //     element(by.binding('item.reusedBinding'));
-//   //   var reused = $p('.body').find('#baz').find('{{item.reusedBinding}}');
+  it('should chain deeper than 2', function() {
+    // These should throw no error before a page is loaded.
+    // var reused = element(by.css('body')).element(by.id('baz')).element(by.binding('item.reusedBinding'));
+    var reused = $p('.body:first').find('#baz:first').find('{{item.reusedBinding}}:first');
 
-//   //   browser.get('index.html#/conflict');
+    browser.get('index.html#/conflict');
 
-//   //   // expect(reused.getText()).toEqual('Inner: inner');
-//   //   expect(reused.text()).toEqual('Inner: inner');
-//   // });
+    // expect(reused.getText()).toEqual('Inner: inner');
+    expect(reused.text()).toEqual('Inner: inner');
+  });
 
-//   // it('should determine element presence properly with chaining', function() {
-//   //   browser.get('index.html#/conflict');
-//   //   // expect(element(by.id('baz')).
-//   //   //     isElementPresent(by.binding('item.reusedBinding'))).
-//   //   //     toBe(true);
-//   //   expect($p('#baz').find('{{item.reusedBinding}}').length).toBe(1);
+  it('should determine element presence properly with chaining', function() {
+    browser.get('index.html#/conflict');
+    expect(
+      element(by.id('baz')).isElementPresent(by.binding('item.reusedBinding'))
+    ).toEqual(
+      $p('#baz:first').find('{{item.reusedBinding}}:first').is(':visible')
+    );
 
-//   //   // expect(element(by.id('baz')).
-//   //   //     isElementPresent(by.binding('nopenopenope'))).
-//   //   //     toBe(false);
-//   //   // expect(element(by.binding('nopenopenope')).isPresent()).toBeTruthy();
-//   //   expect($p('#baz').find('{{nopenopenope}}').length).toBe(0);
-//   // });
+    expect(
+      element(by.id('baz')).isElementPresent(by.binding('nopenopenope'))
+    ).toEqual(
+      $p('#baz:first').find('{{nopenopenope}}:first').is(':visible')
+    );
 
-//   // it('should export an isPresent helper', function() {
-//   //   browser.get('index.html#/form');
+    expect(
+      element(by.binding('nopenopenope')).isPresent()
+    ).toEqual(
+      $p('{{nopenopenope}}:first').is(':visible')
+    );
+  });
 
-//   //   expect(element(by.binding('greet')).isPresent()).toBe(true);
-//   //   expect(element(by.binding('nopenopenope')).isPresent()).toBe(false);
-//   // });
+  it('should export an isPresent helper', function() {
+    browser.get('index.html#/form');
 
-//   // it('should allow handling errors', function() {
-//   //   browser.get('index.html#/form');
-//   //   var elmFinder = $('.nopenopenope').getText().then(function(success) {
-//   //     // This should throw an error. Fail.
-//   //     expect(true).toEqual(false);
-//   //   }, function(err) {
-//   //     expect(true).toEqual(true);
-//   //   });
-//   // });
+    expect(
+      element(by.binding('greet')).isPresent()
+    ).toBe(
+      $p('{{greet}}:first').is(':visible')
+    );
+    expect(
+      element(by.binding('nopenopenope')).isPresent()
+    ).toBe(
+      $p('{{nopenopenope}}:first').is(':visible')
+    );
+  });
 
-//   // it('should allow handling chained errors', function() {
-//   //   browser.get('index.html#/form');
-//   //   var elmFinder = $('.nopenopenope').$('furthernope').getText().then(
-//   //     function(success) {
-//   //       // This should throw an error. Fail.
-//   //       expect(true).toEqual(false);
-//   //     }, function(err) {
-//   //       expect(true).toEqual(true);
-//   //     });
-//   // });
+  it('should allow handling errors', function() {
+    browser.get('index.html#/form');
+    var elmFinder = $('.nopenopenope').getText().then(function(success) {
+      // This should throw an error. Fail.
+      expect(true).toEqual(false);
+    }, function(err) {
+      expect(true).toEqual(true);
+    });
+    var $elmFinder = $p('.nopenopenope:first').text().then(function(success) {
+      // This should throw an error. Fail.
+      expect(true).toEqual(false);
+    }, function(err) {
+      expect(true).toEqual(true);
+    });
+    expect(elmFinder).toEqual($elmFinder);
+  });
 
-//   // it('isPresent() should not raise error on chained finders', function() {
-//   //   browser.get('index.html#/form');
-//   //   var elmFinder = $('.nopenopenope').element(by.binding('greet'));
+  it('should allow handling chained errors', function() {
+    browser.get('index.html#/form');
+    var elmFinder = $('.nopenopenope').$('furthernope').getText().then(
+      function(success) {
+        // This should throw an error. Fail.
+        expect(true).toEqual(false);
+      }, function(err) {
+        expect(true).toEqual(true);
+      });
+    var $elmFinder = $p('.nopenopenope:first').find('furthernope:first').text().then(
+      function(success) {
+        // This should throw an error. Fail.
+        expect(true).toEqual(false);
+      }, function(err) {
+        expect(true).toEqual(true);
+      });
+    expect(elmFinder).toEqual($elmFinder);
+  });
 
-//   //   expect(elmFinder.isPresent()).toBe(false);
-//   // });
+  it('isPresent() should not raise error on chained finders', function() {
+    browser.get('index.html#/form');
+    var elmFinder = $('.nopenopenope').element(by.binding('greet'));
+    var $elmFinder = $p('.nopenopenope:first').find('{{greet}}:first');
 
-//   // it('should export an allowAnimations helper', function() {
-//   //   browser.get('index.html#/animation');
-//   //   var animationTop = element(by.id('animationTop'));
-//   //   var toggledNode = element(by.id('toggledNode'));
+    expect(elmFinder.isPresent()).toBe(false);
+    expect($elmFinder.is(':visible')).toBe(false);
+  });
 
-//   //   expect(animationTop.allowAnimations()).toBe(true);
-//   //   animationTop.allowAnimations(false);
-//   //   expect(animationTop.allowAnimations()).toBe(false);
+  it('should export an allowAnimations helper', function() {
+    browser.get('index.html#/animation');
+    var animationTop = element(by.id('animationTop'));
+    var $animationTop = $p('#animationTop:first');
+    var toggledNode = element(by.id('toggledNode'));
+    var $toggledNode = $p('#toggledNode:first');
 
-//   //   expect(toggledNode.isPresent()).toBe(true);
-//   //   element(by.id('checkbox')).click();
-//   //   expect(toggledNode.isPresent()).toBe(false);
-//   // });
+    expect(animationTop.allowAnimations()).toBe(true);
+    expect($animationTop.allowAnimations()).toBe(true);
+    animationTop.allowAnimations(false);
+    $animationTop.allowAnimations(false);
+    expect(animationTop.allowAnimations()).toBe(false);
+    expect($animationTop.allowAnimations()).toBe(false);
 
-//   // it('should keep a reference to the original locator', function() {
-//   //   browser.get('index.html#/form');
+    expect(toggledNode.isPresent()).toBe(true);
+    expect($toggledNode.is(':visible')).toBe(true);
+    element(by.id('checkbox')).click();
+    expect(toggledNode.isPresent()).toBe(false);
+    $p('#checkbox:first').click();
+    expect($toggledNode.is(':visible')).toBe(true);
+  });
 
-//   //   var byCss = by.css('body');
-//   //   var byBinding = by.binding('greet');
+  // it('should keep a reference to the original locator', function() {
+  //   browser.get('index.html#/form');
 
-//   //   expect(element(byCss).locator()).toEqual(byCss);
-//   //   expect(element(byBinding).locator()).toEqual(byBinding);
-//   // });
+  //   var byCss = by.css('body');
+  //   var byBinding = by.binding('greet');
 
-//   // it('should propagate exceptions', function() {
-//   //   browser.get('index.html#/form');
-//   //   var successful = protractor.promise.defer();
+  //   expect(element(byCss).locator()).toEqual(byCss);
+  //   expect(element(byBinding).locator()).toEqual(byBinding);
+  // });
 
-//   //   var invalidElement = element(by.binding('INVALID'));
-//   //   invalidElement.getText().then(function(value) {
-//   //     successful.fulfill(true);
-//   //   }, function(err) {
-//   //     successful.fulfill(false);
-//   //   });
-//   //   expect(successful).toEqual(false);
-//   // });
+  it('should propagate exceptions', function() {
+    browser.get('index.html#/form');
+    var successful = protractor.promise.defer();
+    var invalidElement = element(by.binding('INVALID'));
+    invalidElement.getText().then(function(value) {
+      successful.fulfill(true);
+    }, function(err) {
+      successful.fulfill(false);
+    });
+    expect(successful).toEqual(false);
+    var $successful = protractor.promise.defer();
+    var $invalidElement = $p('{{INVALID}}:first');
+    $invalidElement.text().then(function(value) {
+      $successful.fulfill(true);
+    }, function(err) {
+      $successful.fulfill(false);
+    });
+    expect($successful).toEqual(false);
+  });
 
-//   // it('should be returned from a helper without infinite loops', function() {
-//   //   browser.get('index.html#/form');
-//   //   var helperPromise = protractor.promise.when(true).then(function() {
-//   //     return element(by.binding('greeting'));
-//   //   });
+  it('should be returned from a helper without infinite loops', function() {
+    browser.get('index.html#/form');
+    var helperPromise = protractor.promise.when(true).then(function() {
+      return element(by.binding('greeting'));
+    });
 
-//   //   helperPromise.then(function(finalResult) {
-//   //     expect(finalResult.getText()).toEqual('Hiya');
-//   //   });
-//   // });
+    helperPromise.then(function(finalResult) {
+      expect(finalResult.getText()).toEqual('Hiya');
+    });
 
-//   // it('should be usable in WebDriver functions via getWebElement', function() {
-//   //   // TODO(juliemr): should be able to do this without the getWebElement call
-//   //   browser.get('index.html#/form');
-//   //   var greeting = element(by.binding('greeting'));
-//   //   browser.executeScript(
-//   //       'arguments[0].scrollIntoView', greeting.getWebElement());
-//   // });
+    var $helperPromise = protractor.promise.when(true).then(function() {
+      return $p('{{greeting}}:first');
+    });
 
-//   // it('should allow null as success handler', function() {
-//   //   browser.get('index.html#/form');
+    $helperPromise.then(function(finalResult) {
+      expect(finalResult.text()).toEqual('Hiya');
+    });
+  });
 
-//   //   var usernameInput = element(by.model('username'));
-//   //   var name = element(by.binding('username'));
+  it('should be usable in WebDriver functions via getWebElement', function() {
+    // TODO(juliemr): should be able to do this without the getWebElement call
+    browser.get('index.html#/form');
+    var greeting = element(by.binding('greeting'));
+    browser.executeScript('arguments[0].scrollIntoView', greeting.getWebElement());
+    var $greeting = $p('{{greeting}}:first');
+    browser.executeScript('arguments[0].scrollIntoView', $greeting.eq(0));
+  });
 
-//   //   expect(name.getText()).toEqual('Anon');
-//   //   expect(
-//   //     name.getText().then(null, function() {})
-//   //   ).toEqual('Anon');
+  it('should allow null as success handler', function() {
+    browser.get('index.html#/form');
 
-//   // });
-// });
+    var usernameInput = element(by.model('username'));
+    var name = element(by.binding('username'));
 
-// describe('ElementArrayFinder', function() {
+    expect(name.getText()).toEqual('Anon');
+    expect(
+      name.getText().then(null, function() {})
+    ).toEqual('Anon');
 
-//   it('action should act on all elements', function() {
-//     browser.get('index.html#/conflict');
+    var $usernameInput = $p('[ng-model="username"]');
+    var $name = $p('{{username}}');
 
-//     var multiElement = element.all(by.binding('item.reusedBinding'));
-//     expect(multiElement.getText()).toEqual(['Outer: outer', 'Inner: inner']);
-//   });
+    expect($name.text()).toEqual('Anon');
+    expect(
+      $name.text().then(null, function() {})
+    ).toEqual('Anon');
+  });
+});
 
-//   it('click action should act on all elements', function() {
-//     var checkboxesElms = $$('#checkboxes input');
-//     browser.get('index.html');
+describe('ElementArrayFinder', function() {
 
-//     expect(checkboxesElms.isSelected()).toEqual([true, false, false, false]);
-//     checkboxesElms.click();
-//     expect(checkboxesElms.isSelected()).toEqual([false, true, true, true]);
-//   });
+  it('action should act on all elements', function() {
+    browser.get('index.html#/conflict');
 
-//   it('action should act on all elements selected by filter', function() {
-//     browser.get('index.html');
+    var multiElement = element.all(by.binding('item.reusedBinding'));
+    expect(multiElement.getText()).toEqual(['Outer: outer', 'Inner: inner']);
+    var $multiElement = $p('{{item.reusedBinding}}');
+    expect($multiElement.text()).toEqual('Outer: outerInner: inner');
+  });
 
-//     var multiElement = $$('#checkboxes input').filter(function(elem, index) {
-//       return index == 2 || index == 3;
-//     });
-//     multiElement.click();
-//     expect($('#letterlist').getText()).toEqual('wx');
-//   });
+  it('click action should act on all elements', function() {
+    var checkboxesElms = $$('#checkboxes input');
+    browser.get('index.html');
 
-//   it('filter should chain with index correctly', function() {
-//     browser.get('index.html');
+    expect(checkboxesElms.isSelected()).toEqual([true, false, false, false]);
+    checkboxesElms.click();
+    expect(checkboxesElms.isSelected()).toEqual([false, true, true, true]);
+    
+    var $checkboxesElms = $p('#checkboxes').find('input');
+    browser.get('index.html');
+    expect($checkboxesElms.is(':checked')).toEqual(true);
+    $checkboxesElms.click();
+    expect($checkboxesElms.is(':checked')).toEqual(false);
+  });
 
-//     var elem = $$('#checkboxes input').filter(function(elem, index) {
-//       return index == 2 || index == 3;
-//     }).last();
-//     elem.click();
-//     expect($('#letterlist').getText()).toEqual('x');
-//   });
+  it('action should act on all elements selected by filter', function() {
+    browser.get('index.html');
 
-//   it('filter should work in page object', function() {
-//     var elements = element.all(by.css('#animals ul li')).filter(function(elem) {
-//       return elem.getText().then(function(text) {
-//         return text === 'big dog';
-//       });
-//     });
+    var multiElement = $$('#checkboxes input').filter(function(elem, index) {
+      return index == 2 || index == 3;
+    });
+    multiElement.click();
+    expect($('#letterlist').getText()).toEqual('wx');
 
-//     browser.get('index.html#/form');
-//     expect(elements.count()).toEqual(1);
-//   });
+    var $multiElement = $p('#checkboxes').find('input').filter(function(elem, index) {
+      return index == 2 || index == 3;
+    });
+    $multiElement.click();
+    $multiElement.click();
+    expect($p('#letterlist').text()).toEqual('wx');
+  });
+
+  it('filter should chain with index correctly', function() {
+    browser.get('index.html');
+
+    var elem = $$('#checkboxes input').filter(function(elem, index) {
+      return index == 2 || index == 3;
+    }).last();
+    elem.click();
+    expect($('#letterlist').getText()).toEqual('x');
+
+    var $elem = $p('#checkboxes').find('input').filter(function(elem, index) {
+      return index == 2 || index == 3;
+    }).last();
+    $elem.click();
+    $elem.click();
+    expect($p('#letterlist').text()).toEqual('x');
+  });
+
+  it('filter should work in page object', function() {
+    var elements = element.all(by.css('#animals ul li')).filter(function(elem) {
+      return elem.getText().then(function(text) {
+        return text === 'big dog';
+      });
+    });
+    browser.get('index.html#/form');
+    expect(elements.count()).toEqual(1);
+    
+    browser.get('index.html');
+    var $elements = $p('#animals').find('ul').find('li').filter(function(elem) {
+      return elem.getText().then(function(text) {
+        return text === 'big dog';
+      });
+    });
+    browser.get('index.html#/form');
+    expect($elements.length).toEqual(1);
+  });
 
 //   it('should be able to get ElementFinder from filtered ElementArrayFinder', function() {
 //     var isDog = function(elem) {
@@ -531,7 +621,7 @@ var util = require('util');
 
 //     expect(result).toEqual(expected);
 //   });
-// });
+});
 
 // describe('evaluating statements', function() {
 //   beforeEach(function() {

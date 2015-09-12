@@ -12,7 +12,7 @@ exports.config = {
 
   // Spec patterns are relative to the current working directly when
   // protractor is called.
-  specs: ['tests/spec.js'],
+  specs: ['tests/spec.js', 'tests/protractor_tests/**/*_spec.js'],
 
   // A base URL for your application under test. Calls to protractor.get()
   // with relative paths will be prepended with this.

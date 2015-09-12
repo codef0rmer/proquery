@@ -14,8 +14,9 @@ describe('Proquery Core: ', function() {
     expect($p('[ng-model="username"]').length).toEqual(element.all(by.model('username')).count());
   });
 
-  it('Should support CLASS selector', function() {
-    expect($p('.body').length).toEqual(element.all(by.css('body')).count());
+  it('Should support ELEMENT and CLASS selector', function() {
+    expect($p('body').length).toEqual(element.all(by.css('body')).count());
+    expect($p('.menu').length).toEqual(element.all(by.css('menu')).count());
   });
 
   it('Should support ID selector', function() {
@@ -85,4 +86,29 @@ describe('Proquery Core: ', function() {
     expect($p('{{username}}').text()).toEqual(element.all(by.binding('username')).getText().then(join));
     expect($p('{{username}}:first').text()).toEqual(element.all(by.binding('username')).first().getText().then(join));
   });
+
+  it('Should find children with supported selectors and psuedo selectors', function() {
+    expect($p('body').find('[type="text"]').length).toBe(element.all(by.css('body')).all(by.css('[type="text"]')).count());
+    expect($p('body').find('[name="points"]').length).toBe(element.all(by.css('body')).all(by.css('[name="points"]')).count());
+    expect($p('body').find('[ng-model="username"]').length).toBe(element.all(by.css('body')).all(by.model('username')).count());
+    expect($p('body').find('.menu').length).toBe(element.all(by.css('body')).all(by.css('menu')).count());
+    expect($p('body').find('#checkboxes').length).toBe(element.all(by.css('body')).all(by.id('checkboxes')).count());
+    expect($p('body').find('{{username}}').length).toBe(element.all(by.css('body')).all(by.binding('username')).count());
+    expect($p('body').find('{{username}}:first').length).toBe(element.all(by.css('body')).all(by.binding('username')).first().isPresent().then(function() { return 1; }, function() { return 0; }));
+  });
+
+  // @todo
+  // it('Should support .is', function() {
+  // 
+  // });
+
+  // @todo
+  // it('Should support .eq', function() {
+  // 
+  // });
+
+  // @todo
+  // it('Should support .filter and .filterNative', function() {
+  // 
+  // });
 });
