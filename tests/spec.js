@@ -1,6 +1,6 @@
 var $p = require('../index.js');
 
-describe('Proquery Core: ', function() {
+describe('Proquery selectors: ', function() {
   beforeEach(function() {
     browser.get('index.html#/form');
   });
@@ -40,6 +40,12 @@ describe('Proquery Core: ', function() {
     expect($p('#checkboxes:last').length).toEqual(element.all(by.id('checkboxes')).last().isPresent().then(function() { return 1; }, function() { return 0; }));
     expect($p('{{username}}:first').length).toEqual(element.all(by.binding('username')).first().isPresent().then(function() { return 1; }, function() { return 0; }));
     expect($p('{{username}}:last').length).toEqual(element.all(by.binding('username')).last().isPresent().then(function() { return 1; }, function() { return 0; }));
+  });
+});
+
+describe('Proquery manipulations: ', function() {
+  beforeEach(function() {
+    browser.get('index.html#/form');
   });
 
   it('Should get attribute value from first element using .attr', function() {
@@ -85,6 +91,12 @@ describe('Proquery Core: ', function() {
     expect($p('#checkboxes:first').text()).toEqual(element.all(by.id('checkboxes')).first().getText().then(join));
     expect($p('{{username}}').text()).toEqual(element.all(by.binding('username')).getText().then(join));
     expect($p('{{username}}:first').text()).toEqual(element.all(by.binding('username')).first().getText().then(join));
+  });
+});
+
+describe('Proquery traversing: ', function() {
+  beforeEach(function() {
+    browser.get('index.html#/form');
   });
 
   it('Should find children with supported selectors and psuedo selectors', function() {
