@@ -28,6 +28,10 @@ module.exports = function(selector) {
       $p = context.all(by.css(baseSelector));
     }
 
+    return exposePublicAPIs($p, psuedoSelector);
+  };
+
+  var exposePublicAPIs = function($p, psuedoSelector) {
     // For psuedo such username:first or username:last
     if (psuedoSelector === 'first') {
       $p = $p.first();
@@ -60,25 +64,24 @@ module.exports = function(selector) {
     };
 
     $p.is = function(check) {
+      var $this = typeof this.each === 'function' ? this.first() : this;
       if (check === ':visible') {
-        return this.isPresent().then(function() { return true; }, function() { return false; });
+        return  $this.isPresent().then(function() { return true; }, function() { return false; });
       } else if (check === ':checked') {
-        return typeof this.each === 'function' ? this.first().isSelected() : this.isSelected();
+        return $this.isSelected();
       }
     };
 
     $p.filterNative = $p.filter;
     $p.filter = function(fn) {
-      var filtered = this.filterNative(fn);
-      filtered.length = filtered.count().then(function(length) { return length; }, function() { return 0; });
-      return filtered;
+      return exposePublicAPIs(this.filterNative(fn));
     };
 
     $p.eq = function(elementIndex) {
-      if (typeof this.each === 'function') {
+      if (typeof this.each === 'function' && elementIndex >= 0) {
         return this.filter(function(el, i) { 
           return i === elementIndex;
-        }).getWebElement();
+        }).first().getWebElement();
       } else if (elementIndex === 0) {
         return this.getWebElement();
       } else {
@@ -87,7 +90,7 @@ module.exports = function(selector) {
     };
 
     $p.find = init;
-    
+
     return $p;
   };
 

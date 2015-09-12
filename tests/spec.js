@@ -97,18 +97,32 @@ describe('Proquery Core: ', function() {
     expect($p('body').find('{{username}}:first').length).toBe(element.all(by.css('body')).all(by.binding('username')).first().isPresent().then(function() { return 1; }, function() { return 0; }));
   });
 
-  // @todo
-  // it('Should support .is', function() {
-  // 
-  // });
+  it('Should expose existing APIs with .find and .filter', function() {
+    var methods = Object.keys($p('body'));
+    expect(methods.join(',')).toEqual(Object.keys($p('body').find('[type="text"]')).join(','));
+    expect(methods.join(',')).toEqual(Object.keys($p('body').filter(function() { return true; })).join(','));
+  });
 
-  // @todo
-  // it('Should support .eq', function() {
-  // 
-  // });
+  it('Should support .filter and .filterNative', function() {
+    var $li = $p('#animals').find('ul').find('li').filter(function(elem) {
+      return elem.getText().then(function(text) {
+        return text === 'big dog';
+      });
+    });
+    expect($li.length).toBe(1);
+  });
 
-  // @todo
-  // it('Should support .filter and .filterNative', function() {
-  // 
-  // });
+  it('Should support .is for visibility and check status', function() {
+    expect($p('#checkboxes').is(':visible')).toBe(element.all(by.id('checkboxes')).first().isPresent());
+    expect($p('#checkboxes:first').is(':visible')).toBe(element(by.id('checkboxes')).isPresent());
+    expect($p('#checkboxes').is(':checked')).toBe(element.all(by.id('checkboxes')).first().isSelected());
+    expect($p('#checkboxes:first').is(':checked')).toBe(element(by.id('checkboxes')).isSelected());
+  });
+
+  it('Should support .eq to get webElement', function() {
+    expect($p('{{greeting}}').eq(0).getText()).toBe(element.all(by.binding('greeting')).filter(function(el, i) { return i === 0; }).first().getWebElement().getText());
+    expect($p('{{greeting}}:first').eq(0).getText()).toBe(element(by.binding('greeting')).getWebElement().getText());
+    expect($p('{{greeting}}').eq(-1)).toBeUndefined();
+    expect($p('{{greeting}}').eq()).toBeUndefined();
+  });
 });

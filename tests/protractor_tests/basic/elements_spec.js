@@ -350,18 +350,21 @@ describe('ElementArrayFinder', function() {
     expect($elements.length).toEqual(1);
   });
 
-//   it('should be able to get ElementFinder from filtered ElementArrayFinder', function() {
-//     var isDog = function(elem) {
-//       return elem.getText().then(function(text) {
-//         return text.indexOf('dog') > -1;
-//       });
-//     };
-//     var elements = element.all(by.css('#animals ul li')).filter(isDog);
-
-//     browser.get('index.html#/form');
-//     expect(elements.count()).toEqual(3);
-//     expect(elements.get(2).getText()).toEqual('other dog');
-//   });
+  it('should be able to get ElementFinder from filtered ElementArrayFinder', function() {
+    var isDog = function(elem) {
+      return elem.getText().then(function(text) {
+        return text.indexOf('dog') > -1;
+      });
+    };
+    var elements = element.all(by.css('#animals ul li')).filter(isDog);
+    browser.get('index.html#/form');
+    expect(elements.count()).toEqual(3);
+    expect(elements.get(2).getText()).toEqual('other dog');
+    
+    var $elements = $p('#animals ul li').filter(isDog);
+    expect($elements.length).toEqual(3);
+    expect($elements.get(2).getText()).toEqual('other dog');
+  });
 
 //   it('filter should be compoundable', function() {
 //     var isDog = function(elem) {
