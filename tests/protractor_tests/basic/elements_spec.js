@@ -357,53 +357,64 @@ describe('ElementArrayFinder', function() {
       });
     };
     var elements = element.all(by.css('#animals ul li')).filter(isDog);
+    var $elements = $p('#animals').find('ul').find('li').filter(isDog);
     browser.get('index.html#/form');
-    expect(elements.count()).toEqual(3);
-    expect(elements.get(2).getText()).toEqual('other dog');
-    
-    var $elements = $p('#animals ul li').filter(isDog);
-    expect($elements.length).toEqual(3);
-    expect($elements.get(2).getText()).toEqual('other dog');
+    expect(elements.count()).toEqual($elements.length);
+    expect(elements.get(2).getText()).toEqual($elements.get(2).text());
   });
 
-//   it('filter should be compoundable', function() {
-//     var isDog = function(elem) {
-//       return elem.getText().then(function(text) {
-//         return text.indexOf('dog') > -1;
-//       });
-//     };
-//     var isBig = function(elem) {
-//       return elem.getText().then(function(text) {
-//         return text.indexOf('big') > -1;
-//       });
-//     };
-//     var elements = element.all(by.css('#animals ul li')).filter(isDog).filter(isBig);
+  it('filter should be compoundable', function() {
+    var isDog = function(elem) {
+      return elem.getText().then(function(text) {
+        return text.indexOf('dog') > -1;
+      });
+    };
+    var isBig = function(elem) {
+      return elem.getText().then(function(text) {
+        return text.indexOf('big') > -1;
+      });
+    };
+    var elements = element.all(by.css('#animals ul li')).filter(isDog).filter(isBig);
+    var $elements = $p('#animals').find('ul').find('li').filter(isDog).filter(isBig);
 
-//     browser.get('index.html#/form');
-//     expect(elements.count()).toEqual(1);
-//     elements.then(function(arr) {
-//       expect(arr[0].getText()).toEqual('big dog');
-//     });
-//   });
+    browser.get('index.html#/form');
+    expect(elements.count()).toEqual($elements.length);
+    elements.then(function(arr) {
+      expect(arr[0].getText()).toEqual('big dog');
+    });
 
-//   it('filter should work with reduce', function() {
-//     var isDog = function(elem) {
-//       return elem.getText().then(function(text) {
-//         return text.indexOf('dog') > -1;
-//       });
-//     };
-//     browser.get('index.html#/form');
-//     var value = element.all(by.css('#animals ul li')).filter(isDog).
-//         reduce(function(currentValue, elem, index, elemArr) {
-//           return elem.getText().then(function(text) {
-//             return currentValue + index + '/' + elemArr.length + ': ' + text + '\n';
-//           });
-//         }, '');
+    $elements.then(function(arr) {
+      expect($p(arr[0]).text()).toEqual('big dog');
+    });
+  });
 
-//     expect(value).toEqual('0/3: big dog\n' +
-//                           '1/3: small dog\n' +
-//                           '2/3: other dog\n');
-//   });
+  it('filter should work with reduce', function() {
+    var isDog = function(elem) {
+      return elem.getText().then(function(text) {
+        return text.indexOf('dog') > -1;
+      });
+    };
+    browser.get('index.html#/form');
+    var value = element.all(by.css('#animals ul li')).filter(isDog).
+        reduce(function(currentValue, elem, index, elemArr) {
+          return elem.getText().then(function(text) {
+            return currentValue + index + '/' + elemArr.length + ': ' + text + '\n';
+          });
+        }, '');
+    var $value = $p('#animals').find('ul').find('li').filter(isDog).
+        reduce(function(currentValue, elem, index, elemArr) {
+          return elem.getText().then(function(text) {
+            return currentValue + index + '/' + elemArr.length + ': ' + text + '\n';
+          });
+        }, '');
+
+    expect(value).toEqual('0/3: big dog\n' +
+                          '1/3: small dog\n' +
+                          '2/3: other dog\n');
+    expect($value).toEqual('0/3: big dog\n' +
+                          '1/3: small dog\n' +
+                          '2/3: other dog\n');
+  });
 
 //   it('should find multiple elements scoped properly with chaining', function() {
 //     browser.get('index.html#/conflict');

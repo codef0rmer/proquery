@@ -109,10 +109,12 @@ describe('Proquery traversing: ', function() {
     expect($p('body').find('{{username}}:first').length).toBe(element.all(by.css('body')).all(by.binding('username')).first().isPresent().then(function() { return 1; }, function() { return 0; }));
   });
 
-  it('Should expose existing APIs with .find and .filter', function() {
-    var methods = Object.keys($p('body'));
-    expect(methods.join(',')).toEqual(Object.keys($p('body').find('[type="text"]')).join(','));
-    expect(methods.join(',')).toEqual(Object.keys($p('body').filter(function() { return true; })).join(','));
+  it('Should expose existing APIs with .find, .filter, .get, .first, and .last', function() {
+    expect($p('body').find('[type="text"]').length).toBeDefined();
+    expect($p('body').filter(function() { return true; }).length).toBeDefined();
+    expect($p('body').get(0).length).toBeDefined();
+    expect($p('body').first().length).toBeDefined();
+    expect($p('body').last().length).toBeDefined();
   });
 
   it('Should support .filter and .filterNative', function() {
@@ -129,17 +131,23 @@ describe('Proquery traversing: ', function() {
     expect(li.count()).toBe($li.length);
   });
 
-  // it('Should support .is for visibility and check status', function() {
-  //   expect($p('#checkboxes').is(':visible')).toBe(element.all(by.id('checkboxes')).first().isPresent());
-  //   expect($p('#checkboxes:first').is(':visible')).toBe(element(by.id('checkboxes')).isPresent());
-  //   expect($p('#checkboxes').is(':checked')).toBe(element.all(by.id('checkboxes')).first().isSelected());
-  //   expect($p('#checkboxes:first').is(':checked')).toBe(element(by.id('checkboxes')).isSelected());
-  // });
+  it('Should support .get, .first, and .last', function() {
+    expect($p('[type="text"]').get(1).val()).toEqual(element.all(by.css('[type="text"]')).get(1).getAttribute('value'));
+    expect($p('[type="text"]').first().val()).toEqual(element.all(by.css('[type="text"]')).first().getAttribute('value'));
+    expect($p('[type="text"]').last().val()).toEqual(element.all(by.css('[type="text"]')).last().getAttribute('value'));
+  });
 
-  // it('Should support .eq to get webElement', function() {
-  //   expect($p('{{greeting}}').eq(0).getText()).toBe(element.all(by.binding('greeting')).filter(function(el, i) { return i === 0; }).first().getWebElement().getText());
-  //   expect($p('{{greeting}}:first').eq(0).getText()).toBe(element(by.binding('greeting')).getWebElement().getText());
-  //   expect($p('{{greeting}}').eq(-1)).toBeUndefined();
-  //   expect($p('{{greeting}}').eq()).toBeUndefined();
-  // });
+  it('Should support .is for visibility and check status', function() {
+    expect($p('#checkboxes').is(':visible')).toBe(element.all(by.id('checkboxes')).first().isPresent());
+    expect($p('#checkboxes:first').is(':visible')).toBe(element(by.id('checkboxes')).isPresent());
+    expect($p('#checkboxes').is(':checked')).toBe(element.all(by.id('checkboxes')).first().isSelected());
+    expect($p('#checkboxes:first').is(':checked')).toBe(element(by.id('checkboxes')).isSelected());
+  });
+
+  it('Should support .eq to get webElement', function() {
+    expect($p('{{greeting}}').eq(0).getText()).toBe(element.all(by.binding('greeting')).filter(function(el, i) { return i === 0; }).first().getWebElement().getText());
+    expect($p('{{greeting}}:first').eq(0).getText()).toBe(element(by.binding('greeting')).getWebElement().getText());
+    expect($p('{{greeting}}').eq(-1)).toBeUndefined();
+    expect($p('{{greeting}}').eq()).toBeUndefined();
+  });
 });

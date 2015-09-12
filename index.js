@@ -49,6 +49,12 @@ module.exports = function(selector) {
       }
     }
 
+    // backup native methods before overriding
+    $p.filterNative = $p.filter;
+    $p.getNative = $p.get;
+    $p.firstNative = $p.first;
+    $p.lastNative = $p.last;
+    
     $p.val = function(value) {
       if (value === '' || !!value) {
         return this.clear().then(function() { return this.sendKeys(value) }.bind(this)); 
@@ -78,7 +84,6 @@ module.exports = function(selector) {
       }
     };
 
-    $p.filterNative = $p.filter;
     $p.filter = function(fn) {
       return exposePublicAPIs(this.filterNative(fn));
     };
@@ -93,6 +98,18 @@ module.exports = function(selector) {
       } else {
         return undefined;
       }
+    };
+
+    $p.get = function(elementIndex) {
+      return exposePublicAPIs(this.getNative(elementIndex));
+    };
+
+    $p.first = function() {
+      return exposePublicAPIs(this.firstNative());
+    };
+
+    $p.last = function() {
+      return exposePublicAPIs(this.lastNative());
     };
 
     $p.find = init;
