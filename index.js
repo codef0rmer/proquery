@@ -67,6 +67,11 @@ module.exports = function(selector) {
       return this.getText().then(function(text) { return typeof text === 'string' ? text : text.join(''); });
     };
 
+    $p.html = function() {
+      var $this = typeof this.each === 'function' ? this.first() : this;
+      return $this.getInnerHtml().then(function(html) { return html; });
+    };
+
     $p.attr = function(attribute) {
       return typeof this.each === 'function' ? this.first().getAttribute(attribute) : this.getAttribute(attribute);
     };
@@ -78,7 +83,7 @@ module.exports = function(selector) {
     $p.is = function(check) {
       var $this = typeof this.each === 'function' ? this.first() : this;
       if (check === ':visible') {
-        return  $this.isPresent().then(function() { return true; }, function() { return false; });
+        return  $this.isPresent().then(function(isVisible) { return isVisible; }, function() { return false; });
       } else if (check === ':checked') {
         return $this.isSelected();
       }

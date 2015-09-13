@@ -92,6 +92,13 @@ describe('Proquery manipulations: ', function() {
     expect($p('{{username}}').text()).toEqual(element.all(by.binding('username')).getText().then(join));
     expect($p('{{username}}:first').text()).toEqual(element.all(by.binding('username')).first().getText().then(join));
   });
+
+  it('Should get innerHTML using .html', function() {
+    expect($p('.body').html()).toEqual(element.all(by.css('body')).first().getInnerHtml());
+    expect($p('.body:first').html()).toEqual(element.all(by.css('body')).first().getInnerHtml());
+    expect($p('{{username}}').html()).toEqual(element.all(by.binding('username')).first().getInnerHtml());
+    expect($p('{{username}}:first').html()).toEqual(element.all(by.binding('username')).first().getInnerHtml());
+  });
 });
 
 describe('Proquery traversing: ', function() {

@@ -192,6 +192,7 @@ describe('ElementFinder', function() {
     expect($toggledNode.is(':visible')).toBe(true);
   });
 
+  // @todo unable to get the locator
   // it('should keep a reference to the original locator', function() {
   //   browser.get('index.html#/form');
 
@@ -416,255 +417,347 @@ describe('ElementArrayFinder', function() {
                           '2/3: other dog\n');
   });
 
-//   it('should find multiple elements scoped properly with chaining', function() {
-//     browser.get('index.html#/conflict');
+  it('should find multiple elements scoped properly with chaining', function() {
+    browser.get('index.html#/conflict');
 
-//     element.all(by.binding('item')).then(function(elems) {
-//       expect(elems.length).toEqual(4);
-//     });
+    element.all(by.binding('item')).then(function(elems) {
+      expect(elems.length).toEqual(4);
+    });
+    $p('{{item}}').then(function(elems) {
+      expect(elems.length).toEqual(4);
+    });
 
-//     element(by.id('baz')).all(by.binding('item')).then(function(elems) {
-//       expect(elems.length).toEqual(2);
-//     });
-//   });
+    element(by.id('baz')).all(by.binding('item')).then(function(elems) {
+      expect(elems.length).toEqual(2);
+    });
+    $p('#baz').find('{{item}}').then(function(elems) {
+      expect(elems.length).toEqual(2);
+    });
+  });
 
-//   it('should wait to grab multiple chained elements', function() {
-//     // These should throw no error before a page is loaded.
-//     var reused = element(by.id('baz')).all(by.binding('item'));
+  it('should wait to grab multiple chained elements', function() {
+    // These should throw no error before a page is loaded.
+    var reused = element(by.id('baz')).all(by.binding('item'));
+    var $reused = $p('#baz').find('{{item}}');
 
-//     browser.get('index.html#/conflict');
+    browser.get('index.html#/conflict');
 
-//     expect(reused.count()).toEqual(2);
-//     expect(reused.get(0).getText()).toEqual('Inner: inner');
-//     expect(reused.last().getText()).toEqual('Inner other: innerbarbaz');
-//   });
+    expect(reused.count()).toEqual(2);
+    expect($reused.length).toEqual(2);
+    expect(reused.get(0).getText()).toEqual('Inner: inner');
+    expect($reused.get(0).text()).toEqual('Inner: inner');
+    expect(reused.last().getText()).toEqual('Inner other: innerbarbaz');
+    expect($reused.last().text()).toEqual('Inner other: innerbarbaz');
+  });
 
-//   it('should wait to grab elements chained by index', function() {
-//     // These should throw no error before a page is loaded.
-//     var reused = element(by.id('baz')).all(by.binding('item'));
-//     var first = reused.first();
-//     var second = reused.get(1);
-//     var last = reused.last();
+  it('should wait to grab elements chained by index', function() {
+    // These should throw no error before a page is loaded.
+    var reused = element(by.id('baz')).all(by.binding('item'));
+    var $reused = $p('#baz').find('{{item}}');
+    var first = reused.first();
+    var $first = $reused.first();
+    var second = reused.get(1);
+    var $second = $reused.get(1);
+    var last = reused.last();
+    var $last = $reused.last();
 
-//     browser.get('index.html#/conflict');
+    browser.get('index.html#/conflict');
 
-//     expect(reused.count()).toEqual(2);
-//     expect(first.getText()).toEqual('Inner: inner');
-//     expect(second.getText()).toEqual('Inner other: innerbarbaz');
-//     expect(last.getText()).toEqual('Inner other: innerbarbaz');
-//   });
+    expect(reused.count()).toEqual(2);
+    expect($reused.length).toEqual(2);
+    expect(first.getText()).toEqual('Inner: inner');
+    expect($first.text()).toEqual('Inner: inner');
+    expect(second.getText()).toEqual('Inner other: innerbarbaz');
+    expect($second.text()).toEqual('Inner other: innerbarbaz');
+    expect(last.getText()).toEqual('Inner other: innerbarbaz');
+    expect($last.text()).toEqual('Inner other: innerbarbaz');
+  });
 
-//   it('should count all elements', function() {
-//     browser.get('index.html#/form');
+  it('should count all elements', function() {
+    browser.get('index.html#/form');
 
-//     element.all(by.model('color')).count().then(function(num) {
-//       expect(num).toEqual(3);
-//     });
+    element.all(by.model('color')).count().then(function(num) {
+      expect(num).toEqual(3);
+    });
+    $p('[ng-model="color"]').length.then(function(num) {
+      expect(num).toEqual(3);
+    });
 
-//     // Should also work with promise expect unwrapping
-//     expect(element.all(by.model('color')).count()).toEqual(3);
-//   });
+    // Should also work with promise expect unwrapping
+    expect(element.all(by.model('color')).count()).toEqual(3);
+    expect($p('[ng-model="color"]').length).toEqual(3);
+  });
 
-//   it('should return 0 when counting no elements', function() {
-//     browser.get('index.html#/form');
+  it('should return 0 when counting no elements', function() {
+    browser.get('index.html#/form');
 
-//     expect(element.all(by.binding('doesnotexist')).count()).toEqual(0);
-//   });
+    expect(element.all(by.binding('doesnotexist')).count()).toEqual(0);
+    expect($p('{{doesnotexist}}').length).toEqual(0);
+  });
 
-//   it('should return not present when an element disappears within an array', 
-//       function() {
-//     browser.get('index.html#/form');
-//     element.all(by.model('color')).then(function(elements) {
-//       var disappearingElem = elements[0];
-//       expect(disappearingElem.isPresent()).toBeTruthy();
-//       browser.get('index.html#/bindings');
-//       expect(disappearingElem.isPresent()).toBeFalsy();
-//     });
-//   });
+  it('should return not present when an element disappears within an array', 
+      function() {
+    browser.get('index.html#/form');
+    element.all(by.model('color')).then(function(elements) {
+      var disappearingElem = elements[0];
+      expect(disappearingElem.isPresent()).toBeTruthy();
+      browser.get('index.html#/bindings');
+      expect(disappearingElem.isPresent()).toBeFalsy();
+    });
 
-//   it('should get an element from an array', function() {
-//     var colorList = element.all(by.model('color'));
+    browser.get('index.html#/form');
+    $p('[ng-model="color"]').then(function(elements) {
+      var $disappearingElem = $p(elements[0]);
+      expect($disappearingElem.is(':visible')).toBeTruthy();
+      browser.get('index.html#/bindings');
+      expect($disappearingElem.is(':visible')).toBeFalsy();
+    });
+  });
 
-//     browser.get('index.html#/form');
+  it('should get an element from an array', function() {
+    var colorList = element.all(by.model('color'));
+    var $colorList = $p('[ng-model="color"]');
 
-//     expect(colorList.get(0).getAttribute('value')).toEqual('blue');
-//     expect(colorList.get(1).getAttribute('value')).toEqual('green');
-//     expect(colorList.get(2).getAttribute('value')).toEqual('red');
-//   });
+    browser.get('index.html#/form');
 
-//   it('should get an element from an array using negative indices', function() {
-//     var colorList = element.all(by.model('color'));
+    expect(colorList.get(0).getAttribute('value')).toEqual('blue');
+    expect($colorList.get(0).attr('value')).toEqual('blue');
+    expect(colorList.get(1).getAttribute('value')).toEqual('green');
+    expect($colorList.get(1).attr('value')).toEqual('green');
+    expect(colorList.get(2).getAttribute('value')).toEqual('red');
+    expect($colorList.get(2).attr('value')).toEqual('red');
+  });
 
-//     browser.get('index.html#/form');
+  it('should get an element from an array using negative indices', function() {
+    var colorList = element.all(by.model('color'));
+    var $colorList = $p('[ng-model="color"]');
 
-//     expect(colorList.get(-3).getAttribute('value')).toEqual('blue');
-//     expect(colorList.get(-2).getAttribute('value')).toEqual('green');
-//     expect(colorList.get(-1).getAttribute('value')).toEqual('red');
-//   });
+    browser.get('index.html#/form');
 
-//   it('should get the first element from an array', function() {
-//     var colorList = element.all(by.model('color'));
-//     browser.get('index.html#/form');
+    expect(colorList.get(-3).getAttribute('value')).toEqual('blue');
+    expect($colorList.get(-3).attr('value')).toEqual('blue');
+    expect(colorList.get(-2).getAttribute('value')).toEqual('green');
+    expect($colorList.get(-2).attr('value')).toEqual('green');
+    expect(colorList.get(-1).getAttribute('value')).toEqual('red');
+    expect($colorList.get(-1).attr('value')).toEqual('red');
+  });
 
-//     expect(colorList.first().getAttribute('value')).toEqual('blue');
-//   });
+  it('should get the first element from an array', function() {
+    var colorList = element.all(by.model('color'));
+    var $colorList = $p('[ng-model="color"]');
+    browser.get('index.html#/form');
 
-//   it('should get the last element from an array', function() {
-//     var colorList = element.all(by.model('color'));
-//     browser.get('index.html#/form');
+    expect(colorList.first().getAttribute('value')).toEqual('blue');
+    expect($colorList.first().attr('value')).toEqual('blue');
+  });
 
-//     expect(colorList.last().getAttribute('value')).toEqual('red');
-//   });
+  it('should get the last element from an array', function() {
+    var colorList = element.all(by.model('color'));
+    var $colorList = $p('[ng-model="color"]');
+    browser.get('index.html#/form');
 
-//   it('should perform an action on each element in an array', function() {
-//     var colorList = element.all(by.model('color'));
-//     browser.get('index.html#/form');
+    expect(colorList.last().getAttribute('value')).toEqual('red');
+    expect($colorList.last().attr('value')).toEqual('red');
+  });
 
-//     colorList.each(function(colorElement) {
-//       expect(colorElement.getText()).not.toEqual('purple');
-//     });
-//   });
+  it('should perform an action on each element in an array', function() {
+    var colorList = element.all(by.model('color'));
+    var $colorList = $p('[ng-model="color"]');
+    browser.get('index.html#/form');
 
-//   it('should keep a reference to the array original locator', function() {
-//     var byCss = by.css('#animals ul li');
-//     var byModel = by.model('color');
-//     browser.get('index.html#/form');
+    colorList.each(function(colorElement) {
+      expect(colorElement.getText()).not.toEqual('purple');
+    });
+    $colorList.each(function(colorElement) {
+      expect($p(colorElement).text()).not.toEqual('purple');
+    });
+  });
 
-//     expect(element.all(byCss).locator()).toEqual(byCss);
-//     expect(element.all(byModel).locator()).toEqual(byModel);
-//   });
+  // @todo unable to get the locator
+  // it('should keep a reference to the array original locator', function() {
+  //   var byCss = by.css('#animals ul li');
+  //   var byModel = by.model('color');
+  //   browser.get('index.html#/form');
 
-//   it('should map each element on array and with promises', function() {
-//     browser.get('index.html#/form');
-//     var labels = element.all(by.css('#animals ul li')).map(function(elm, index) {
-//       return {
-//         index: index,
-//         text: elm.getText()
-//       };
-//     });
+  //   expect(element.all(byCss).locator()).toEqual(byCss);
+  //   expect(element.all(byModel).locator()).toEqual(byModel);
+  // });
 
-//     expect(labels).toEqual([
-//       {index: 0, text: 'big dog'},
-//       {index: 1, text: 'small dog'},
-//       {index: 2, text: 'other dog'},
-//       {index: 3, text: 'big cat'},
-//       {index: 4, text: 'small cat'}
-//     ]);
-//   });
+  it('should map each element on array and with promises', function() {
+    browser.get('index.html#/form');
+    var labels = element.all(by.css('#animals ul li')).map(function(elm, index) {
+      return {
+        index: index,
+        text: elm.getText()
+      };
+    });
+    var $labels = $p('#animals').find('ul').find('li').map(function(elm, index) {
+      return {
+        index: index,
+        text: $p(elm).text()
+      };
+    });
+    expect(labels).toEqual([
+      {index: 0, text: 'big dog'},
+      {index: 1, text: 'small dog'},
+      {index: 2, text: 'other dog'},
+      {index: 3, text: 'big cat'},
+      {index: 4, text: 'small cat'}
+    ]);
+    expect($labels).toEqual([
+      {index: 0, text: 'big dog'},
+      {index: 1, text: 'small dog'},
+      {index: 2, text: 'other dog'},
+      {index: 3, text: 'big cat'},
+      {index: 4, text: 'small cat'}
+    ]);
+  });
 
-//   it('should map and resolve multiple promises', function() {
-//     browser.get('index.html#/form');
-//     var labels = element.all(by.css('#animals ul li')).map(function(elm) {
-//       return {
-//         text: elm.getText(),
-//         inner: elm.getInnerHtml()
-//       };
-//     });
+  it('should map and resolve multiple promises', function() {
+    browser.get('index.html#/form');
+    var labels = element.all(by.css('#animals ul li')).map(function(elm) {
+      return {
+        text: elm.getText(),
+        inner: elm.getInnerHtml()
+      };
+    });
+    var $labels = $p('#animals').find('ul').find('li').map(function(elm) {
+      return {
+        text: $p(elm).text(),
+        inner: $p(elm).html()
+      };
+    });
 
-//     var newExpected = function(expectedLabel) {
-//       return {
-//         text: expectedLabel,
-//         inner: expectedLabel
-//       };
-//     };
+    var newExpected = function(expectedLabel) {
+      return {
+        text: expectedLabel,
+        inner: expectedLabel
+      };
+    };
 
-//     expect(labels).toEqual([
-//       newExpected('big dog'),
-//       newExpected('small dog'),
-//       newExpected('other dog'),
-//       newExpected('big cat'),
-//       newExpected('small cat')
-//     ]);
-//   });
+    expect(labels).toEqual([
+      newExpected('big dog'),
+      newExpected('small dog'),
+      newExpected('other dog'),
+      newExpected('big cat'),
+      newExpected('small cat')
+    ]);
+    expect($labels).toEqual([
+      newExpected('big dog'),
+      newExpected('small dog'),
+      newExpected('other dog'),
+      newExpected('big cat'),
+      newExpected('small cat')
+    ]);
+  });
 
-//   it('should map each element from a literal and promise array', function() {
-//     browser.get('index.html#/form');
-//     var i = 1;
-//     var labels = element.all(by.css('#animals ul li')).map(function(elm) {
-//       return i++;
-//     });
+  it('should map each element from a literal and promise array', function() {
+    browser.get('index.html#/form');
+    var i = 1, j = 1;
+    var labels = element.all(by.css('#animals ul li')).map(function(elm) {
+      return i++;
+    });
+    var $labels = $p('#animals').find('ul').find('li').map(function(elm) {
+      return j++;
+    });
 
-//     expect(labels).toEqual([1, 2, 3, 4, 5]);
-//   });
+    expect(labels).toEqual([1, 2, 3, 4, 5]);
+    expect($labels).toEqual([1, 2, 3, 4, 5]);
+  });
 
-//   it('should filter elements', function() {
-//     browser.get('index.html#/form');
-//     var count = element.all(by.css('#animals ul li')).filter(function(elem) {
-//       return elem.getText().then(function(text) {
-//         return text === 'big dog';
-//       });
-//     }).then(function(filteredElements) {
-//       return filteredElements.length;
-//     });
+  it('should filter elements', function() {
+    browser.get('index.html#/form');
+    var count = element.all(by.css('#animals ul li')).filter(function(elem) {
+      return elem.getText().then(function(text) {
+        return text === 'big dog';
+      });
+    }).then(function(filteredElements) {
+      return filteredElements.length;
+    });
+    var $count = $p('#animals').find('ul').find('li').filter(function(elem) {
+      return $p(elem).text().then(function(text) {
+        return text === 'big dog';
+      });
+    }).then(function(filteredElements) {
+      return filteredElements.length;
+    });
 
-//     expect(count).toEqual(1);
-//   });
+    expect($count).toEqual(1);
+  });
 
-//   it('should reduce elements', function() {
-//     browser.get('index.html#/form');
-//     var value = element.all(by.css('#animals ul li')).
-//         reduce(function(currentValue, elem, index, elemArr) {
-//           return elem.getText().then(function(text) {
-//             return currentValue + index + '/' + elemArr.length + ': ' + text + '\n';
-//           });
-//         }, '');
+  it('should reduce elements', function() {
+    browser.get('index.html#/form');
+    var value = element.all(by.css('#animals ul li')).
+        reduce(function(currentValue, elem, index, elemArr) {
+          return elem.getText().then(function(text) {
+            return currentValue + index + '/' + elemArr.length + ': ' + text + '\n';
+          });
+        }, '');
+    var $value = $p('#animals').find('ul').find('li').
+        reduce(function(currentValue, elem, index, elemArr) {
+          return $p(elem).text().then(function(text) {
+            return currentValue + index + '/' + elemArr.length + ': ' + text + '\n';
+          });
+        }, '');
 
-//     expect(value).toEqual('0/5: big dog\n' +
-//                           '1/5: small dog\n' +
-//                           '2/5: other dog\n' +
-//                           '3/5: big cat\n' +
-//                           '4/5: small cat\n');
-//   });
+    expect(value).toEqual('0/5: big dog\n' +
+                          '1/5: small dog\n' +
+                          '2/5: other dog\n' +
+                          '3/5: big cat\n' +
+                          '4/5: small cat\n');
+    expect($value).toEqual('0/5: big dog\n' +
+                          '1/5: small dog\n' +
+                          '2/5: other dog\n' +
+                          '3/5: big cat\n' +
+                          '4/5: small cat\n');
+  });
 
-//   it('should allow using protractor locator within map', function() {
-//     browser.get('index.html#/repeater');
+  it('should allow using protractor locator within map', function() {
+    browser.get('index.html#/repeater');
 
-//     var expected = [
-//         { first: 'M', second: 'Monday' },
-//         { first: 'T', second: 'Tuesday' },
-//         { first: 'W', second: 'Wednesday' },
-//         { first: 'Th', second: 'Thursday' },
-//         { first: 'F', second: 'Friday' }];
+    var expected = [
+        { first: 'M', second: 'Monday' },
+        { first: 'T', second: 'Tuesday' },
+        { first: 'W', second: 'Wednesday' },
+        { first: 'Th', second: 'Thursday' },
+        { first: 'F', second: 'Friday' }];
 
-//     var result = element.all(by.repeater('allinfo in days')).map(function(el) {
-//       return {
-//         first: el.element(by.binding('allinfo.initial')).getText(),
-//         second: el.element(by.binding('allinfo.name')).getText()
-//       };
-//     });
+    var result = element.all(by.repeater('allinfo in days')).map(function(el) {
+      return {
+        first: el.element(by.binding('allinfo.initial')).getText(),
+        second: el.element(by.binding('allinfo.name')).getText()
+      };
+    });
 
-//     expect(result).toEqual(expected);
-//   });
+    expect(result).toEqual(expected);
+  });
 });
 
+// @todo find a use-case for `evaluate`
 // describe('evaluating statements', function() {
 //   beforeEach(function() {
 //     browser.get('index.html#/form');
 //   });
-
 //   it('should evaluate statements in the context of an element', function() {
 //     var checkboxElem = element(by.id('checkboxes'));
-
 //     checkboxElem.evaluate('show').then(function(output) {
 //       expect(output).toBe(true);
 //     });
-
 //     // Make sure it works with a promise expectation.
 //     expect(checkboxElem.evaluate('show')).toBe(true);
 //   });
 // });
 
+// @todo check if we can use $ and $$ in $p() call
 // describe('shortcut css notation', function() {
 //   beforeEach(function() {
 //     browser.get('index.html#/bindings');
 //   });
-
 //   it('should grab by css', function() {
 //     expect($('.planet-info').getText()).
 //         toEqual(element(by.css('.planet-info')).getText());
 //     expect($$('option').count()).toEqual(element.all(by.css('option')).count());
 //   });
-
 //   it('should chain $$ with $', function() {
 //     var withoutShortcutCount =
 //         element(by.css('select')).all(by.css('option')).then(function(options) {
