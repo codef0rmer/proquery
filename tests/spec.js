@@ -41,6 +41,12 @@ describe('Proquery selectors: ', function() {
     expect($p('{{username}}:first').length).toEqual(element.all(by.binding('username')).first().isPresent().then(function() { return 1; }, function() { return 0; }));
     expect($p('{{username}}:last').length).toEqual(element.all(by.binding('username')).last().isPresent().then(function() { return 1; }, function() { return 0; }));
   });
+
+  it('Should support :contains for anchor elements', function() {
+    expect($p('a:contains(repeater)').length).toEqual(element.all(by.partialLinkText('repeater')).count());
+    expect($p('a:contains(\'repeater\')').length).toEqual(element.all(by.partialLinkText('repeater')).count());
+    expect($p('a:contains("repeater")').length).toEqual(element.all(by.partialLinkText('repeater')).count());
+  });
 });
 
 describe('Proquery manipulations: ', function() {
