@@ -61,7 +61,7 @@ describe('ElementFinder', function() {
     // expect(reused.getText()).toEqual('Inner: inner');
     expect(reused.text()).toEqual('Inner: inner');
     // expect(reused.isPresent()).toBe(true);
-    expect(reused.is(':visible')).toBe(true);
+    expect(reused.is(':present')).toBe(true);
   });
 
   it('should differentiate elements with the same binding by chaining', function() {
@@ -94,19 +94,19 @@ describe('ElementFinder', function() {
     expect(
       element(by.id('baz')).isElementPresent(by.binding('item.reusedBinding'))
     ).toEqual(
-      $p('#baz:first').find('{{item.reusedBinding}}:first').is(':visible')
+      $p('#baz:first').find('{{item.reusedBinding}}:first').is(':present')
     );
 
     expect(
       element(by.id('baz')).isElementPresent(by.binding('nopenopenope'))
     ).toEqual(
-      $p('#baz:first').find('{{nopenopenope}}:first').is(':visible')
+      $p('#baz:first').find('{{nopenopenope}}:first').is(':present')
     );
 
     expect(
       element(by.binding('nopenopenope')).isPresent()
     ).toEqual(
-      $p('{{nopenopenope}}:first').is(':visible')
+      $p('{{nopenopenope}}:first').is(':present')
     );
   });
 
@@ -116,12 +116,12 @@ describe('ElementFinder', function() {
     expect(
       element(by.binding('greet')).isPresent()
     ).toBe(
-      $p('{{greet}}:first').is(':visible')
+      $p('{{greet}}:first').is(':present')
     );
     expect(
       element(by.binding('nopenopenope')).isPresent()
     ).toBe(
-      $p('{{nopenopenope}}:first').is(':visible')
+      $p('{{nopenopenope}}:first').is(':present')
     );
   });
 
@@ -167,7 +167,7 @@ describe('ElementFinder', function() {
     var $elmFinder = $p('.nopenopenope:first').find('{{greet}}:first');
 
     expect(elmFinder.isPresent()).toBe(false);
-    expect($elmFinder.is(':visible')).toBe(false);
+    expect($elmFinder.is(':present')).toBe(false);
   });
 
   it('should export an allowAnimations helper', function() {
@@ -185,11 +185,11 @@ describe('ElementFinder', function() {
     expect($animationTop.allowAnimations()).toBe(false);
 
     expect(toggledNode.isPresent()).toBe(true);
-    expect($toggledNode.is(':visible')).toBe(true);
+    expect($toggledNode.is(':present')).toBe(true);
     element(by.id('checkbox')).click();
     expect(toggledNode.isPresent()).toBe(false);
     $p('#checkbox:first').click();
-    expect($toggledNode.is(':visible')).toBe(true);
+    expect($toggledNode.is(':present')).toBe(true);
   });
 
   // @todo unable to get the locator
@@ -508,9 +508,9 @@ describe('ElementArrayFinder', function() {
     browser.get('index.html#/form');
     $p('[ng-model="color"]').then(function(elements) {
       var $disappearingElem = $p(elements[0]);
-      expect($disappearingElem.is(':visible')).toBeTruthy();
+      expect($disappearingElem.is(':present')).toBeTruthy();
       browser.get('index.html#/bindings');
-      expect($disappearingElem.is(':visible')).toBeFalsy();
+      expect($disappearingElem.is(':present')).toBeFalsy();
     });
   });
 

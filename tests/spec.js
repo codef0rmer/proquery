@@ -150,9 +150,11 @@ describe('Proquery traversing: ', function() {
     expect($p('[type="text"]').last().val()).toEqual(element.all(by.css('[type="text"]')).last().getAttribute('value'));
   });
 
-  it('Should support .is for visibility and check status', function() {
-    expect($p('#checkboxes').is(':visible')).toBe(element.all(by.id('checkboxes')).first().isPresent());
-    expect($p('#checkboxes:first').is(':visible')).toBe(element(by.id('checkboxes')).isPresent());
+  it('Should support .is for presence, visibility, and check status', function() {
+    expect($p('#checkboxes').is(':present')).toBe(element.all(by.id('checkboxes')).first().isPresent());
+    expect($p('#checkboxes:first').is(':present')).toBe(element(by.id('checkboxes')).isPresent());
+    expect($p('#checkboxes').is(':visible')).toBe(element.all(by.id('checkboxes')).first().isDisplayed());
+    expect($p('#checkboxes:first').is(':visible')).toBe(element(by.id('checkboxes')).isDisplayed());
     expect($p('#checkboxes').is(':checked')).toBe(element.all(by.id('checkboxes')).first().isSelected());
     expect($p('#checkboxes:first').is(':checked')).toBe(element(by.id('checkboxes')).isSelected());
   });

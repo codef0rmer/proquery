@@ -7,11 +7,17 @@ module.exports = function(selector) {
         psuedoSelector  = selector.split(':')[1],
         isLinkFilter    = baseSelector === 'a' && psuedoSelector.indexOf('contains') === 0,
         isClass         = baseSelector.indexOf('.') === 0,
-        isBinding       = !!baseSelector.match(/{{[A-Za-z0-9\.]+\}}/g),
+        isBinding       = !!baseSelector.match(/{{[A-Za-z0-9\.\|_]+\}}/g),
         isNgModel       = baseSelector.indexOf('[ng-model=') === 0,
         isId            = baseSelector.indexOf('#') === 0,
         context         = context || this;
 
+    // handle native :checked psuedoSelector with by.css
+    if (psuedoSelector === 'checked' && isClass) {
+      baseSelector = baseSelector + ':' + psuedoSelector;
+      psuedoSelector = '';
+    }
+    
     // :contains() for links
     if (isLinkFilter) baseSelector = ( psuedoSelector.match(/^contains\((.*)+\)/)[1] || '').replace(/'/g, '').replace(/"/g, '');
 
@@ -88,8 +94,10 @@ module.exports = function(selector) {
 
     $p.is = function(check) {
       var $this = typeof this.each === 'function' ? this.first() : this;
-      if (check === ':visible') {
-        return  $this.isPresent().then(function(isVisible) { return isVisible; }, function() { return false; });
+      if (check === ':present') {
+        return  $this.isPresent().then(function(isPresent) { return isPresent; }, function() { return false; });
+      } else if (check === ':visible') {
+        return  $this.isDisplayed().then(function(isVisible) { return isVisible; }, function() { return false; });
       } else if (check === ':checked') {
         return $this.isSelected();
       }
