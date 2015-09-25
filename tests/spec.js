@@ -42,10 +42,13 @@ describe('Proquery selectors: ', function() {
     expect($p('{{username}}:last').length).toEqual(element.all(by.binding('username')).last().isPresent().then(function() { return 1; }, function() { return 0; }));
   });
 
-  it('Should support :contains for anchor elements', function() {
+  it('Should support :contains for anchor and button elements', function() {
     expect($p('a:contains(repeater)').length).toEqual(element.all(by.partialLinkText('repeater')).count());
     expect($p('a:contains(\'repeater\')').length).toEqual(element.all(by.partialLinkText('repeater')).count());
     expect($p('a:contains("repeater")').length).toEqual(element.all(by.partialLinkText('repeater')).count());
+    expect($p('button:contains(text)').length).toEqual(element.all(by.partialButtonText('text')).count());
+    expect($p('button:contains(\'text\')').length).toEqual(element.all(by.partialButtonText('text')).count());
+    expect($p('button:contains("text")').length).toEqual(element.all(by.partialButtonText('text')).count());
   });
 });
 

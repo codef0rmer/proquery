@@ -6,6 +6,7 @@ module.exports = function(selector) {
         baseSelector    = selector.split(':')[0],
         psuedoSelector  = selector.split(':')[1],
         isLinkFilter    = baseSelector === 'a' && psuedoSelector.indexOf('contains') === 0,
+        isButtonFilter  = baseSelector === 'button' && psuedoSelector.indexOf('contains') === 0,
         isClass         = baseSelector.indexOf('.') === 0,
         isBinding       = !!baseSelector.match(/{{[A-Za-z0-9\.\|_]+\}}/g),
         isNgModel       = baseSelector.indexOf('[ng-model=') === 0,
@@ -18,8 +19,8 @@ module.exports = function(selector) {
       psuedoSelector = '';
     }
     
-    // :contains() for links
-    if (isLinkFilter) baseSelector = ( psuedoSelector.match(/^contains\((.*)+\)/)[1] || '').replace(/'/g, '').replace(/"/g, '');
+    // :contains() for links and buttons
+    if (isLinkFilter || isButtonFilter) baseSelector = ( psuedoSelector.match(/^contains\((.*)+\)/)[1] || '').replace(/'/g, '').replace(/"/g, '');
 
     // skip . and # from CSS class and ID respectively
     if (isClass || isId) baseSelector = baseSelector.substr(1);
@@ -30,7 +31,9 @@ module.exports = function(selector) {
     // skip "" or '' from ngModel
     if (isNgModel) baseSelector = baseSelector.split('"')[1] || selector.split('\'')[1];
 
-    if (isLinkFilter) {
+    if (isButtonFilter) {
+      $p = context.all(by.partialButtonText(baseSelector));
+    } else if (isLinkFilter) {
       $p = context.all(by.partialLinkText(baseSelector));
     } else if (isBinding) {
       $p = context.all(by.binding(baseSelector));
