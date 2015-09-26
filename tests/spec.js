@@ -42,13 +42,18 @@ describe('Proquery selectors: ', function() {
     expect($p('{{username}}:last').length).toEqual(element.all(by.binding('username')).last().isPresent().then(function() { return 1; }, function() { return 0; }));
   });
 
-  it('Should support :contains for anchor and button elements', function() {
+  it('Should support psuedo selectors :contains for anchor and button elements', function() {
     expect($p('a:contains(repeater)').length).toEqual(element.all(by.partialLinkText('repeater')).count());
     expect($p('a:contains(\'repeater\')').length).toEqual(element.all(by.partialLinkText('repeater')).count());
     expect($p('a:contains("repeater")').length).toEqual(element.all(by.partialLinkText('repeater')).count());
     expect($p('button:contains(text)').length).toEqual(element.all(by.partialButtonText('text')).count());
     expect($p('button:contains(\'text\')').length).toEqual(element.all(by.partialButtonText('text')).count());
     expect($p('button:contains("text")').length).toEqual(element.all(by.partialButtonText('text')).count());
+  });
+
+  it('Should support native psuedo selectors :checked', function() {
+    expect($p('[ng-model="fruit"]').find('.option').length).toBe(4);
+    expect($p('[ng-model="fruit"]').find('.option:checked').length).toBe(1);
   });
 });
 

@@ -194,175 +194,176 @@ describe('locators', function() {
   //   });
   // });
 
-  // describe('by repeater', function() {
-  //   beforeEach(function() {
-  //     browser.get('index.html#/repeater');
-  //   });
+  describe('by repeater', function() {
+    beforeEach(function() {
+      browser.get('index.html#/repeater');
+    });
 
-  //   it('should find by partial match', function() {
-  //     var fullMatch = element(
-  //         by.repeater('baz in days | filter:\'T\'').
-  //             row(0).column('baz.initial'));
-  //     expect(fullMatch.getText()).toEqual('T');
+    it('should find by partial match', function() {
+      var fullMatch = element(by.repeater('baz in days | filter:\'T\'').row(0).column('baz.initial'));
+      // var $fullMatch = $p('[ng-repeat="baz in days | filter:\'T\'"]:first').row(0)/*.column('baz.initial')*/;
+      expect(fullMatch.getText()).toEqual('T');
+      // expect($fullMatch.text()).toEqual('T');
+      expect($fullMatch).toBe(1);
 
-  //     var partialMatch = element(
-  //         by.repeater('baz in days').row(0).column('b'));
-  //     expect(partialMatch.getText()).toEqual('T');
+      var partialMatch = element(
+          by.repeater('baz in days').row(0).column('b'));
+      expect(partialMatch.getText()).toEqual('T');
 
-  //     var partialRowMatch = element(
-  //         by.repeater('baz in days').row(0));
-  //     expect(partialRowMatch.getText()).toEqual('T');
-  //   });
+      var partialRowMatch = element(
+          by.repeater('baz in days').row(0));
+      expect(partialRowMatch.getText()).toEqual('T');
+    });
 
-  //   it('should return all rows when unmodified', function() {
-  //     var all =
-  //         element.all(by.repeater('allinfo in days'));
-  //     all.then(function(arr) {
-  //       expect(arr.length).toEqual(5);
-  //       expect(arr[0].getText()).toEqual('M Monday');
-  //       expect(arr[1].getText()).toEqual('T Tuesday');
-  //       expect(arr[2].getText()).toEqual('W Wednesday');
-  //     });
-  //   });
+    // it('should return all rows when unmodified', function() {
+    //   var all =
+    //       element.all(by.repeater('allinfo in days'));
+    //   all.then(function(arr) {
+    //     expect(arr.length).toEqual(5);
+    //     expect(arr[0].getText()).toEqual('M Monday');
+    //     expect(arr[1].getText()).toEqual('T Tuesday');
+    //     expect(arr[2].getText()).toEqual('W Wednesday');
+    //   });
+    // });
 
-  //   it('should return a single column', function() {
-  //     var initials = element.all(
-  //         by.repeater('allinfo in days').column('initial'));
-  //     initials.then(function(arr) {
-  //       expect(arr.length).toEqual(5);
-  //       expect(arr[0].getText()).toEqual('M');
-  //       expect(arr[1].getText()).toEqual('T');
-  //       expect(arr[2].getText()).toEqual('W');
-  //     });
+    // it('should return a single column', function() {
+    //   var initials = element.all(
+    //       by.repeater('allinfo in days').column('initial'));
+    //   initials.then(function(arr) {
+    //     expect(arr.length).toEqual(5);
+    //     expect(arr[0].getText()).toEqual('M');
+    //     expect(arr[1].getText()).toEqual('T');
+    //     expect(arr[2].getText()).toEqual('W');
+    //   });
 
-  //     var names = element.all(
-  //         by.repeater('allinfo in days').column('name'));
-  //     names.then(function(arr) {
-  //       expect(arr.length).toEqual(5);
-  //       expect(arr[0].getText()).toEqual('Monday');
-  //       expect(arr[1].getText()).toEqual('Tuesday');
-  //       expect(arr[2].getText()).toEqual('Wednesday');
-  //     });
-  //   });
+    //   var names = element.all(
+    //       by.repeater('allinfo in days').column('name'));
+    //   names.then(function(arr) {
+    //     expect(arr.length).toEqual(5);
+    //     expect(arr[0].getText()).toEqual('Monday');
+    //     expect(arr[1].getText()).toEqual('Tuesday');
+    //     expect(arr[2].getText()).toEqual('Wednesday');
+    //   });
+    // });
 
-  //   it('should allow chaining while returning a single column', function() {
-  //     var secondName = element(by.css('.allinfo')).element(
-  //       by.repeater('allinfo in days').column('name').row(2));
-  //     expect(secondName.getText()).toEqual('Wednesday');
-  //   });
+    // it('should allow chaining while returning a single column', function() {
+    //   var secondName = element(by.css('.allinfo')).element(
+    //     by.repeater('allinfo in days').column('name').row(2));
+    //   expect(secondName.getText()).toEqual('Wednesday');
+    // });
 
-  //   it('should return a single row', function() {
-  //     var secondRow = element(
-  //         by.repeater('allinfo in days').row(1));
-  //     expect(secondRow.getText()).toEqual('T Tuesday');
-  //   });
+    // it('should return a single row', function() {
+    //   var secondRow = element(
+    //       by.repeater('allinfo in days').row(1));
+    //   expect(secondRow.getText()).toEqual('T Tuesday');
+    // });
 
-  //   it('should return an individual cell', function() {
-  //     var secondNameByRowFirst = element(
-  //         by.repeater('allinfo in days').
-  //         row(1).
-  //         column('name'));
+    // it('should return an individual cell', function() {
+    //   var secondNameByRowFirst = element(
+    //       by.repeater('allinfo in days').
+    //       row(1).
+    //       column('name'));
 
-  //     var secondNameByColumnFirst = element(
-  //         by.repeater('allinfo in days').
-  //         column('name').
-  //         row(1));
+    //   var secondNameByColumnFirst = element(
+    //       by.repeater('allinfo in days').
+    //       column('name').
+    //       row(1));
 
-  //     expect(secondNameByRowFirst.getText()).toEqual('Tuesday');
-  //     expect(secondNameByColumnFirst.getText()).toEqual('Tuesday');
-  //   });
+    //   expect(secondNameByRowFirst.getText()).toEqual('Tuesday');
+    //   expect(secondNameByColumnFirst.getText()).toEqual('Tuesday');
+    // });
 
-  //   it('should find a using data-ng-repeat', function() {
-  //     var byRow =
-  //       element(by.repeater('day in days').row(2));
-  //     expect(byRow.getText()).toEqual('W');
+    // it('should find a using data-ng-repeat', function() {
+    //   var byRow =
+    //     element(by.repeater('day in days').row(2));
+    //   expect(byRow.getText()).toEqual('W');
 
-  //     var byCol =
-  //         element(by.repeater('day in days').row(2).
-  //         column('day'));
-  //     expect(byCol.getText()).toEqual('W');
-  //   });
+    //   var byCol =
+    //       element(by.repeater('day in days').row(2).
+    //       column('day'));
+    //   expect(byCol.getText()).toEqual('W');
+    // });
 
-  //   it('should find using ng:repeat', function() {
-  //     var byRow =
-  //       element(by.repeater('bar in days').row(2));
-  //     expect(byRow.getText()).toEqual('W');
+    // it('should find using ng:repeat', function() {
+    //   var byRow =
+    //     element(by.repeater('bar in days').row(2));
+    //   expect(byRow.getText()).toEqual('W');
 
-  //     var byCol =
-  //         element(by.repeater('bar in days').row(2).
-  //         column('bar'));
-  //     expect(byCol.getText()).toEqual('W');
-  //   });
+    //   var byCol =
+    //       element(by.repeater('bar in days').row(2).
+    //       column('bar'));
+    //   expect(byCol.getText()).toEqual('W');
+    // });
 
-  //   it('should determine if repeater elements are present', function() {
-  //     expect(element(by.repeater('allinfo in days').row(3)).isPresent()).
-  //         toBe(true);
-  //     // There are only 5 rows, so the 6th row is not present.
-  //     expect(element(by.repeater('allinfo in days').row(5)).isPresent()).
-  //         toBe(false);
-  //   });
+    // it('should determine if repeater elements are present', function() {
+    //   expect(element(by.repeater('allinfo in days').row(3)).isPresent()).
+    //       toBe(true);
+    //   // There are only 5 rows, so the 6th row is not present.
+    //   expect(element(by.repeater('allinfo in days').row(5)).isPresent()).
+    //       toBe(false);
+    // });
 
-  //   it('should have by.exactRepeater working', function() {
-  //     expect(element(by.exactRepeater('day in d')).isPresent()).toBe(false);
-  //     expect(element(by.exactRepeater('day in days')).isPresent()).toBe(true);
+    // it('should have by.exactRepeater working', function() {
+    //   expect(element(by.exactRepeater('day in d')).isPresent()).toBe(false);
+    //   expect(element(by.exactRepeater('day in days')).isPresent()).toBe(true);
 
-  //     // Full ng-repeat: baz in tDays = (days | filter:'T')
-  //     var repeaterWithEqualSign = element(
-  //         by.exactRepeater('baz in tDays').row(0));
-  //     expect(repeaterWithEqualSign.getText()).toEqual('T');
+    //   // Full ng-repeat: baz in tDays = (days | filter:'T')
+    //   var repeaterWithEqualSign = element(
+    //       by.exactRepeater('baz in tDays').row(0));
+    //   expect(repeaterWithEqualSign.getText()).toEqual('T');
 
-  //     // Full ng-repeat: baz in days | filter:'T'
-  //     var repeaterWithPipe = element(
-  //         by.exactRepeater('baz in days').row(0));
-  //     expect(repeaterWithPipe.getText()).toEqual('T');
-  //   });
+    //   // Full ng-repeat: baz in days | filter:'T'
+    //   var repeaterWithPipe = element(
+    //       by.exactRepeater('baz in days').row(0));
+    //   expect(repeaterWithPipe.getText()).toEqual('T');
+    // });
 
-  //   describe('repeaters using ng-repeat-start and ng-repeat-end', function() {
-  //     it('should return all elements when unmodified', function() {
-  //       var all =
-  //           element.all(by.repeater('bloop in days'));
+    // describe('repeaters using ng-repeat-start and ng-repeat-end', function() {
+    //   it('should return all elements when unmodified', function() {
+    //     var all =
+    //         element.all(by.repeater('bloop in days'));
 
-  //       all.then(function(arr) {
-  //         expect(arr.length).toEqual(3 * 5);
-  //         expect(arr[0].getText()).toEqual('M');
-  //         expect(arr[1].getText()).toEqual('-');
-  //         expect(arr[2].getText()).toEqual('Monday');
-  //         expect(arr[3].getText()).toEqual('T');
-  //         expect(arr[4].getText()).toEqual('-');
-  //         expect(arr[5].getText()).toEqual('Tuesday');
-  //       });
-  //     });
+    //     all.then(function(arr) {
+    //       expect(arr.length).toEqual(3 * 5);
+    //       expect(arr[0].getText()).toEqual('M');
+    //       expect(arr[1].getText()).toEqual('-');
+    //       expect(arr[2].getText()).toEqual('Monday');
+    //       expect(arr[3].getText()).toEqual('T');
+    //       expect(arr[4].getText()).toEqual('-');
+    //       expect(arr[5].getText()).toEqual('Tuesday');
+    //     });
+    //   });
 
-  //     it('should return a group of elements for a row', function() {
-  //       var firstRow = element.all(by.repeater('bloop in days').row(0));
+    //   it('should return a group of elements for a row', function() {
+    //     var firstRow = element.all(by.repeater('bloop in days').row(0));
 
-  //       firstRow.then(function(arr) {
-  //         expect(arr.length).toEqual(3);
-  //         expect(arr[0].getText()).toEqual('M');
-  //         expect(arr[1].getText()).toEqual('-');
-  //         expect(arr[2].getText()).toEqual('Monday');
-  //       });
-  //     });
+    //     firstRow.then(function(arr) {
+    //       expect(arr.length).toEqual(3);
+    //       expect(arr[0].getText()).toEqual('M');
+    //       expect(arr[1].getText()).toEqual('-');
+    //       expect(arr[2].getText()).toEqual('Monday');
+    //     });
+    //   });
 
-  //     it('should return a group of elements for a column', function() {
-  //       var nameColumn = element.all(
-  //         by.repeater('bloop in days').column('name'));
+    //   it('should return a group of elements for a column', function() {
+    //     var nameColumn = element.all(
+    //       by.repeater('bloop in days').column('name'));
 
-  //       nameColumn.then(function(arr) {
-  //         expect(arr.length).toEqual(5);
-  //         expect(arr[0].getText()).toEqual('Monday');
-  //         expect(arr[1].getText()).toEqual('Tuesday');
-  //       });
-  //     });
+    //     nameColumn.then(function(arr) {
+    //       expect(arr.length).toEqual(5);
+    //       expect(arr[0].getText()).toEqual('Monday');
+    //       expect(arr[1].getText()).toEqual('Tuesday');
+    //     });
+    //   });
 
-  //     it('should find an individual element', function() {
-  //       var firstInitial = element(
-  //         by.repeater('bloop in days').row(0).column('bloop.initial'));
+    //   it('should find an individual element', function() {
+    //     var firstInitial = element(
+    //       by.repeater('bloop in days').row(0).column('bloop.initial'));
 
-  //       expect(firstInitial.getText()).toEqual('M');
-  //     });
-  //   });
-  // });
+    //     expect(firstInitial.getText()).toEqual('M');
+    //   });
+    // });
+  });
 
   // describe('by css containing text', function() {
   //   it('should find elements by css and partial text', function() {

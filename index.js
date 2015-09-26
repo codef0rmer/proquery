@@ -3,24 +3,19 @@ module.exports = function(selector) {
     if (typeof selector === 'object') return exposePublicAPIs(selector);
 
     var $p,
-        baseSelector    = selector.split(':')[0],
-        psuedoSelector  = selector.split(':')[1],
-        isLinkFilter    = baseSelector === 'a' && psuedoSelector.indexOf('contains') === 0,
-        isButtonFilter  = baseSelector === 'button' && psuedoSelector.indexOf('contains') === 0,
+        baseSelector    = selector.replace(/:first|:last$/, ''),
+        psuedoSelector  = (selector.match(/:first|:last$/) || [""])[0].substr(1),
+        isLinkFilter    = baseSelector.indexOf('a:contains') === 0,
+        isButtonFilter  = baseSelector.indexOf('button:contains') === 0,
         isClass         = baseSelector.indexOf('.') === 0,
         isBinding       = !!baseSelector.match(/{{[A-Za-z0-9\.\|_]+\}}/g),
         isNgModel       = baseSelector.indexOf('[ng-model=') === 0,
+        isNgRepeat      = baseSelector.indexOf('[ng-repeat=') === 0,
         isId            = baseSelector.indexOf('#') === 0,
         context         = context || this;
 
-    // handle native :checked psuedoSelector with by.css
-    if (psuedoSelector === 'checked' && isClass) {
-      baseSelector = baseSelector + ':' + psuedoSelector;
-      psuedoSelector = '';
-    }
-    
     // :contains() for links and buttons
-    if (isLinkFilter || isButtonFilter) baseSelector = ( psuedoSelector.match(/^contains\((.*)+\)/)[1] || '').replace(/'/g, '').replace(/"/g, '');
+    if (isLinkFilter || isButtonFilter) baseSelector = ( baseSelector.match(/:contains\((.*)+\)/)[1] || '').replace(/'/g, '').replace(/"/g, '');
 
     // skip . and # from CSS class and ID respectively
     if (isClass || isId) baseSelector = baseSelector.substr(1);
@@ -29,7 +24,7 @@ module.exports = function(selector) {
     if (isBinding) baseSelector = baseSelector.replace(/{|}/g, '');
 
     // skip "" or '' from ngModel
-    if (isNgModel) baseSelector = baseSelector.split('"')[1] || selector.split('\'')[1];
+    if (isNgModel || isNgRepeat) baseSelector = baseSelector.split('"')[1] || selector.split('\'')[1];
 
     if (isButtonFilter) {
       $p = context.all(by.partialButtonText(baseSelector));
@@ -39,6 +34,8 @@ module.exports = function(selector) {
       $p = context.all(by.binding(baseSelector));
     } else if (isNgModel) {
       $p = context.all(by.model(baseSelector));
+    } else if (isNgRepeat) {
+      $p = context.all(by.repeater(baseSelector));
     } else if (isId) {
       $p = context.all(by.id(baseSelector));
     } else {
