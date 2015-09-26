@@ -81,7 +81,7 @@ describe('ElementFinder', function() {
   it('should chain deeper than 2', function() {
     // These should throw no error before a page is loaded.
     // var reused = element(by.css('body')).element(by.id('baz')).element(by.binding('item.reusedBinding'));
-    var reused = $p('.body:first').find('#baz:first').find('{{item.reusedBinding}}:first');
+    var reused = $p('body:first').find('#baz:first').find('{{item.reusedBinding}}:first');
 
     browser.get('index.html#/conflict');
 

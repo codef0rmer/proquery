@@ -14,9 +14,15 @@ describe('Proquery selectors: ', function() {
     expect($p('[ng-model="username"]').length).toEqual(element.all(by.model('username')).count());
   });
 
+  it('Should support ngRepeat selector', function() {
+    browser.get('index.html#/repeater');
+    expect($p('[ng-repeat="baz in days"]').length).toBe(element.all(by.repeater('baz in days')).count());
+    expect($p('[ng-repeat="baz in days | filter:\'T\'"]').length).toBe(element.all(by.repeater('baz in days | filter:\'T\'')).count());
+  });
+
   it('Should support ELEMENT and CLASS selector', function() {
     expect($p('body').length).toEqual(element.all(by.css('body')).count());
-    expect($p('.menu').length).toEqual(element.all(by.css('menu')).count());
+    expect($p('menu').length).toEqual(element.all(by.css('menu')).count());
   });
 
   it('Should support ID selector', function() {
@@ -34,8 +40,8 @@ describe('Proquery selectors: ', function() {
     expect($p('[name="points"]:last').length).toEqual(element.all(by.css('[name="points"]')).last().isPresent().then(function() { return 1; }, function() { return 0; }));
     expect($p('[ng-model="username"]:first').length).toEqual(element.all(by.model('username')).first().isPresent().then(function() { return 1; }, function() { return 0; }));
     expect($p('[ng-model="username"]:last').length).toEqual(element.all(by.model('username')).last().isPresent().then(function() { return 1; }, function() { return 0; }));
-    expect($p('.body:first').length).toEqual(element.all(by.css('body')).first().isPresent().then(function() { return 1; }, function() { return 0; }));
-    expect($p('.body:last').length).toEqual(element.all(by.css('body')).last().isPresent().then(function() { return 1; }, function() { return 0; }));
+    expect($p('body:first').length).toEqual(element.all(by.css('body')).first().isPresent().then(function() { return 1; }, function() { return 0; }));
+    expect($p('body:last').length).toEqual(element.all(by.css('body')).last().isPresent().then(function() { return 1; }, function() { return 0; }));
     expect($p('#checkboxes:first').length).toEqual(element.all(by.id('checkboxes')).first().isPresent().then(function() { return 1; }, function() { return 0; }));
     expect($p('#checkboxes:last').length).toEqual(element.all(by.id('checkboxes')).last().isPresent().then(function() { return 1; }, function() { return 0; }));
     expect($p('{{username}}:first').length).toEqual(element.all(by.binding('username')).first().isPresent().then(function() { return 1; }, function() { return 0; }));
@@ -52,8 +58,8 @@ describe('Proquery selectors: ', function() {
   });
 
   it('Should support native psuedo selectors :checked', function() {
-    expect($p('[ng-model="fruit"]').find('.option').length).toBe(4);
-    expect($p('[ng-model="fruit"]').find('.option:checked').length).toBe(1);
+    expect($p('[ng-model="fruit"]').find('option').length).toBe(4);
+    expect($p('[ng-model="fruit"]').find('option:checked').length).toBe(1);
   });
 });
 
@@ -99,8 +105,8 @@ describe('Proquery manipulations: ', function() {
     expect($p('[name="points"]:first').text()).toEqual(element.all(by.css('[name="points"]')).first().getText().then(join));
     expect($p('[ng-model="username"]').text()).toEqual(element.all(by.model('username')).getText().then(join));
     expect($p('[ng-model="username"]:first').text()).toEqual(element.all(by.model('username')).first().getText().then(join));
-    expect($p('.body').text()).toEqual(element.all(by.css('body')).getText().then(join));
-    expect($p('.body:first').text()).toEqual(element.all(by.css('body')).first().getText().then(join));
+    expect($p('body').text()).toEqual(element.all(by.css('body')).getText().then(join));
+    expect($p('body:first').text()).toEqual(element.all(by.css('body')).first().getText().then(join));
     expect($p('#checkboxes').text()).toEqual(element.all(by.id('checkboxes')).getText().then(join));
     expect($p('#checkboxes:first').text()).toEqual(element.all(by.id('checkboxes')).first().getText().then(join));
     expect($p('{{username}}').text()).toEqual(element.all(by.binding('username')).getText().then(join));
@@ -108,8 +114,8 @@ describe('Proquery manipulations: ', function() {
   });
 
   it('Should get innerHTML using .html', function() {
-    expect($p('.body').html()).toEqual(element.all(by.css('body')).first().getInnerHtml());
-    expect($p('.body:first').html()).toEqual(element.all(by.css('body')).first().getInnerHtml());
+    expect($p('body').html()).toEqual(element.all(by.css('body')).first().getInnerHtml());
+    expect($p('body:first').html()).toEqual(element.all(by.css('body')).first().getInnerHtml());
     expect($p('{{username}}').html()).toEqual(element.all(by.binding('username')).first().getInnerHtml());
     expect($p('{{username}}:first').html()).toEqual(element.all(by.binding('username')).first().getInnerHtml());
   });
@@ -124,7 +130,7 @@ describe('Proquery traversing: ', function() {
     expect($p('body').find('[type="text"]').length).toBe(element.all(by.css('body')).all(by.css('[type="text"]')).count());
     expect($p('body').find('[name="points"]').length).toBe(element.all(by.css('body')).all(by.css('[name="points"]')).count());
     expect($p('body').find('[ng-model="username"]').length).toBe(element.all(by.css('body')).all(by.model('username')).count());
-    expect($p('body').find('.menu').length).toBe(element.all(by.css('body')).all(by.css('menu')).count());
+    expect($p('body').find('menu').length).toBe(element.all(by.css('body')).all(by.css('menu')).count());
     expect($p('body').find('#checkboxes').length).toBe(element.all(by.css('body')).all(by.id('checkboxes')).count());
     expect($p('body').find('{{username}}').length).toBe(element.all(by.css('body')).all(by.binding('username')).count());
     expect($p('body').find('{{username}}:first').length).toBe(element.all(by.css('body')).all(by.binding('username')).first().isPresent().then(function() { return 1; }, function() { return 0; }));
@@ -156,6 +162,19 @@ describe('Proquery traversing: ', function() {
     expect($p('[type="text"]').get(1).val()).toEqual(element.all(by.css('[type="text"]')).get(1).getAttribute('value'));
     expect($p('[type="text"]').first().val()).toEqual(element.all(by.css('[type="text"]')).first().getAttribute('value'));
     expect($p('[type="text"]').last().val()).toEqual(element.all(by.css('[type="text"]')).last().getAttribute('value'));
+  });
+
+  it('Should fetch .row -> .column in ngRepeat', function() {
+    browser.get('index.html#/repeater');
+    expect($p('[ng-repeat="baz in days"]').get(0).text()).toEqual(element(by.repeater('baz in days').row(0)).getText());
+    expect($p('[ng-repeat="baz in days"]').get(0).find('baz.initial').text()).toEqual(element(by.repeater('baz in days').row(0).column('baz.initial')).getText());
+  });
+
+  it('Should fetch .column -> .row in ngRepeat', function() {
+    browser.get('index.html#/repeater');
+    var join = function(text) { return typeof text === 'string' ? text : text.join(''); };
+    expect($p('[ng-repeat="baz in days"]').find('baz.initial').text()).toEqual(element.all(by.repeater('baz in days').column('baz.initial')).getText().then(join));
+    expect($p('[ng-repeat="baz in days"]').find('baz.initial').get(1).text()).toEqual(element.all(by.repeater('baz in days').column('baz.initial').row(1)).getText().then(join));
   });
 
   it('Should support .is for presence, visibility, and check status', function() {

@@ -17,8 +17,8 @@ module.exports = function(selector) {
     // :contains() for links and buttons
     if (isLinkFilter || isButtonFilter) baseSelector = ( baseSelector.match(/:contains\((.*)+\)/)[1] || '').replace(/'/g, '').replace(/"/g, '');
 
-    // skip . and # from CSS class and ID respectively
-    if (isClass || isId) baseSelector = baseSelector.substr(1);
+    // skip # from ID
+    if (isId) baseSelector = baseSelector.substr(1);
 
     // skip {{ }} from bindings
     if (isBinding) baseSelector = baseSelector.replace(/{|}/g, '');
@@ -26,7 +26,9 @@ module.exports = function(selector) {
     // skip "" or '' from ngModel
     if (isNgModel || isNgRepeat) baseSelector = baseSelector.split('"')[1] || selector.split('\'')[1];
 
-    if (isButtonFilter) {
+    if (context.locator && context.locator().toString().indexOf('by.repeater') >= 0) {
+      $p = element.all(context.locator().column(baseSelector));
+    } else if (isButtonFilter) {
       $p = context.all(by.partialButtonText(baseSelector));
     } else if (isLinkFilter) {
       $p = context.all(by.partialLinkText(baseSelector));
@@ -42,10 +44,10 @@ module.exports = function(selector) {
       $p = context.all(by.css(baseSelector));
     }
 
-    return exposePublicAPIs($p, psuedoSelector);
+    return exposePublicAPIs($p, psuedoSelector, {context: context, isNgRepeat: isNgRepeat});
   };
 
-  var exposePublicAPIs = function($p, psuedoSelector) {
+  var exposePublicAPIs = function($p, psuedoSelector, opts) {
     // For psuedo such username:first or username:last
     if (psuedoSelector === 'first') {
       $p = $p.first();
@@ -120,7 +122,11 @@ module.exports = function(selector) {
     };
 
     $p.get = function(elementIndex) {
-      return exposePublicAPIs(this.getNative(elementIndex));
+      if (opts && opts.isNgRepeat) {
+        return exposePublicAPIs(opts.context.all(this.locator().row(elementIndex)));
+      } else {
+        return exposePublicAPIs(this.getNative(elementIndex));
+      }
     };
 
     $p.first = function() {
