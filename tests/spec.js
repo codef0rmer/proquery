@@ -1,17 +1,33 @@
 var $p = require('../index.js');
+var join = function(text) { return typeof text === 'string' ? text : text.join(''); };
 
 describe('Proquery selectors: ', function() {
   beforeEach(function() {
     browser.get('index.html#/form');
   });
 
-  it('Should support ATTR selector', function() {
+  it('Should support attribute selector', function() {
     expect($p('[type="text"]').length).toEqual(element.all(by.css('[type="text"]')).count());
-    expect($p('[name="points"]').length).toEqual(element.all(by.css('[name="points"]')).count());
   });
 
+  it('Should support element selector', function() {
+    expect($p('textarea').length).toEqual(element.all(by.css('textarea')).count());
+  });
+  
+  it('Should support class selector', function() {
+    expect($p('.menu').length).toEqual(element.all(by.css('.menu')).count());
+  });
+
+  it('Should support ID selector', function() {
+    expect($p('#checkboxes').length).toEqual(element.all(by.id('checkboxes')).count());
+  });
+  
   it('Should support ngModel selector', function() {
     expect($p('[ng-model="username"]').length).toEqual(element.all(by.model('username')).count());
+  });
+  
+  it('Should support {{BINDING}} selector', function() {
+    expect($p('{{username}}').length).toEqual(element.all(by.binding('username')).count());
   });
 
   it('Should support ngRepeat selector', function() {
@@ -19,36 +35,22 @@ describe('Proquery selectors: ', function() {
     expect($p('[ng-repeat="baz in days"]').length).toBe(element.all(by.repeater('baz in days')).count());
     expect($p('[ng-repeat="baz in days | filter:\'T\'"]').length).toBe(element.all(by.repeater('baz in days | filter:\'T\'')).count());
   });
-
-  it('Should support ELEMENT and CLASS selector', function() {
-    expect($p('body').length).toEqual(element.all(by.css('body')).count());
-    expect($p('menu').length).toEqual(element.all(by.css('menu')).count());
-  });
-
-  it('Should support ID selector', function() {
-    expect($p('#checkboxes').length).toEqual(element.all(by.id('checkboxes')).count());
-  });
-
-  it('Should support {{BINDING}} selector', function() {
-    expect($p('{{username}}').length).toEqual(element.all(by.binding('username')).count());
-  });
-
-  it('Should support psuedo selectors, :first and :last', function() {
+  
+  it('Should support :first and :last psuedo selectors', function() {
     expect($p('[type="text"]:first').length).toEqual(element.all(by.css('[type="text"]')).first().isPresent().then(function() { return 1; }, function() { return 0; }));
     expect($p('[type="text"]:last').length).toEqual(element.all(by.css('[type="text"]')).last().isPresent().then(function() { return 1; }, function() { return 0; }));
-    expect($p('[name="points"]:first').length).toEqual(element.all(by.css('[name="points"]')).first().isPresent().then(function() { return 1; }, function() { return 0; }));
-    expect($p('[name="points"]:last').length).toEqual(element.all(by.css('[name="points"]')).last().isPresent().then(function() { return 1; }, function() { return 0; }));
-    expect($p('[ng-model="username"]:first').length).toEqual(element.all(by.model('username')).first().isPresent().then(function() { return 1; }, function() { return 0; }));
-    expect($p('[ng-model="username"]:last').length).toEqual(element.all(by.model('username')).last().isPresent().then(function() { return 1; }, function() { return 0; }));
-    expect($p('body:first').length).toEqual(element.all(by.css('body')).first().isPresent().then(function() { return 1; }, function() { return 0; }));
-    expect($p('body:last').length).toEqual(element.all(by.css('body')).last().isPresent().then(function() { return 1; }, function() { return 0; }));
     expect($p('#checkboxes:first').length).toEqual(element.all(by.id('checkboxes')).first().isPresent().then(function() { return 1; }, function() { return 0; }));
     expect($p('#checkboxes:last').length).toEqual(element.all(by.id('checkboxes')).last().isPresent().then(function() { return 1; }, function() { return 0; }));
+    expect($p('[ng-model="username"]:first').length).toEqual(element.all(by.model('username')).first().isPresent().then(function() { return 1; }, function() { return 0; }));
+    expect($p('[ng-model="username"]:last').length).toEqual(element.all(by.model('username')).last().isPresent().then(function() { return 1; }, function() { return 0; }));
     expect($p('{{username}}:first').length).toEqual(element.all(by.binding('username')).first().isPresent().then(function() { return 1; }, function() { return 0; }));
     expect($p('{{username}}:last').length).toEqual(element.all(by.binding('username')).last().isPresent().then(function() { return 1; }, function() { return 0; }));
+    browser.get('index.html#/repeater');
+    expect($p('[ng-repeat="baz in days"]:first').length).toEqual(element.all(by.repeater('baz in days')).first().isPresent().then(function() { return 1; }, function() { return 0; }));
+    expect($p('[ng-repeat="baz in days"]:last').length).toEqual(element.all(by.repeater('baz in days')).last().isPresent().then(function() { return 1; }, function() { return 0; }));
   });
-
-  it('Should support psuedo selectors :contains for anchor and button elements', function() {
+  
+  it('Should support :contains psuedo selector for anchor and button elements', function() {
     expect($p('a:contains(repeater)').length).toEqual(element.all(by.partialLinkText('repeater')).count());
     expect($p('a:contains(\'repeater\')').length).toEqual(element.all(by.partialLinkText('repeater')).count());
     expect($p('a:contains("repeater")').length).toEqual(element.all(by.partialLinkText('repeater')).count());
@@ -57,7 +59,7 @@ describe('Proquery selectors: ', function() {
     expect($p('button:contains("text")').length).toEqual(element.all(by.partialButtonText('text')).count());
   });
 
-  it('Should support native psuedo selectors :checked', function() {
+  it('Should support native :checked psuedo selectors with <option>', function() {
     expect($p('[ng-model="fruit"]').find('option').length).toBe(4);
     expect($p('[ng-model="fruit"]').find('option:checked').length).toBe(1);
   });
@@ -68,56 +70,94 @@ describe('Proquery manipulations: ', function() {
     browser.get('index.html#/form');
   });
 
-  it('Should get attribute value from first element using .attr', function() {
-    expect($p('[name="points"]').attr('value')).toEqual(element.all(by.name('points')).first().getAttribute('value'));
-    expect($p('[name="points"]:first').attr('value')).toEqual(element.all(by.name('points')).first().getAttribute('value'));
-    expect($p('[name="points"]:last').attr('value')).toEqual(element.all(by.name('points')).last().getAttribute('value'));
+  it('Should get attribute value (of first element) using .attr', function() {
+    expect($p('[class="pet"]').attr('value')).toEqual(element.all(by.css('[class="pet"]')).first().getAttribute('value'));
+    expect($p('[class="pet"]:first').attr('value')).toEqual(element.all(by.css('[class="pet"]')).first().getAttribute('value'));
+    expect($p('[class="pet"]:last').attr('value')).toEqual(element.all(by.css('[class="pet"]')).last().getAttribute('value'));
+    expect($p('#checkboxes').attr('value')).toEqual(element.all(by.id('checkboxes')).first().getAttribute('value'));
+    expect($p('#checkboxes:first').attr('value')).toEqual(element.all(by.id('checkboxes')).first().getAttribute('value'));
+    expect($p('#checkboxes:last').attr('value')).toEqual(element.all(by.id('checkboxes')).last().getAttribute('value'));
+    expect($p('[ng-model="username"]').attr('value')).toEqual(element.all(by.model('username')).first().getAttribute('value'));
+    expect($p('[ng-model="username"]:first').attr('value')).toEqual(element.all(by.model('username')).first().getAttribute('value'));
+    expect($p('[ng-model="username"]:last').attr('value')).toEqual(element.all(by.model('username')).last().getAttribute('value'));
+    expect($p('{{username}}').attr('value')).toEqual(element.all(by.binding('username')).first().getAttribute('value'));
+    expect($p('{{username}}:first').attr('value')).toEqual(element.all(by.binding('username')).first().getAttribute('value'));
+    expect($p('{{username}}:last').attr('value')).toEqual(element.all(by.binding('username')).last().getAttribute('value'));
+    browser.get('index.html#/repeater');
+    expect($p('[ng-repeat="baz in days"]').attr('value')).toEqual(element.all(by.repeater('baz in days')).first().getAttribute('value'));
+    expect($p('[ng-repeat="baz in days"]:first').attr('value')).toEqual(element.all(by.repeater('baz in days')).first().getAttribute('value'));
+    expect($p('[ng-repeat="baz in days"]:last').attr('value')).toEqual(element.all(by.repeater('baz in days')).last().getAttribute('value'));
   });
 
-  it('Should get value from first element using .val', function() {
-    expect($p('[type="text"]').val()).toEqual(element.all(by.css('[type="text"]')).first().getAttribute('value'));
-    expect($p('[type="text"]:first').val()).toEqual(element.all(by.css('[type="text"]')).first().getAttribute('value'));
+  it('Should get attribute value (of first element) using .val', function() {
+    expect($p('[class="pet"]').val()).toEqual(element.all(by.css('[class="pet"]')).first().getAttribute('value'));
+    expect($p('[class="pet"]:first').val()).toEqual(element.all(by.css('[class="pet"]')).first().getAttribute('value'));
+    expect($p('[class="pet"]:last').val()).toEqual(element.all(by.css('[class="pet"]')).last().getAttribute('value'));
+    expect($p('#checkboxes').val()).toEqual(element.all(by.id('checkboxes')).first().getAttribute('value'));
+    expect($p('#checkboxes:first').val()).toEqual(element.all(by.id('checkboxes')).first().getAttribute('value'));
+    expect($p('#checkboxes:last').val()).toEqual(element.all(by.id('checkboxes')).last().getAttribute('value'));
+    expect($p('[ng-model="username"]').val()).toEqual(element.all(by.model('username')).first().getAttribute('value'));
+    expect($p('[ng-model="username"]:first').val()).toEqual(element.all(by.model('username')).first().getAttribute('value'));
+    expect($p('[ng-model="username"]:last').val()).toEqual(element.all(by.model('username')).last().getAttribute('value'));
+    expect($p('{{username}}').val()).toEqual(element.all(by.binding('username')).first().getAttribute('value'));
+    expect($p('{{username}}:first').val()).toEqual(element.all(by.binding('username')).first().getAttribute('value'));
+    expect($p('{{username}}:last').val()).toEqual(element.all(by.binding('username')).last().getAttribute('value'));
+    browser.get('index.html#/repeater');
+    expect($p('[ng-repeat="baz in days"]').val()).toEqual(element.all(by.repeater('baz in days')).first().getAttribute('value'));
+    expect($p('[ng-repeat="baz in days"]:first').val()).toEqual(element.all(by.repeater('baz in days')).first().getAttribute('value'));
+    expect($p('[ng-repeat="baz in days"]:last').val()).toEqual(element.all(by.repeater('baz in days')).last().getAttribute('value'));
   });
-
-  it('Should clear/update multiple elements using .val', function() {
-    element.all(by.css('[type="text"]')).each(function(input) {
-      expect(input.getAttribute('value')).not.toBe('');
-    });
+  
+  it('Should clear user-editable elements using .val', function() {
     $p('[type="text"]').val('');
-    element.all(by.css('[type="text"]')).each(function(input) {
-      expect(input.getAttribute('value')).toBe('');
-    });
-    
-    element.all(by.css('[type="text"]')).each(function(input) {
-      expect(input.getAttribute('value')).not.toBe('codef0rmer');
-    });
+    element.all(by.css('[type="text"]')).each(function(input) { expect(input.getAttribute('value')).toBe(''); });
+  });
+  
+  it('Should update user-editable elements using .val', function() {
     $p('[type="text"]').val('codef0rmer');
-    element.all(by.css('[type="text"]')).each(function(input) {
-      expect(input.getAttribute('value')).toBe('codef0rmer');
-    });
+    element.all(by.css('[type="text"]')).each(function(input) { expect(input.getAttribute('value')).toBe('codef0rmer'); });
+  });
+
+  it('Should throw error for non-user-editable elements using .val', function() {
+    $p('[class="pet"]').val('').thenCatch(function(err) { expect(err).toBeDefined(); });
   });
 
   it('Should get innerText using .text', function() {
-    var join = function(text) { return typeof text === 'string' ? text : text.join(''); };
-    expect($p('[type="text"]').text()).toEqual(element.all(by.css('[type="text"]')).getText().then(join));
-    expect($p('[type="text"]:first').text()).toEqual(element.all(by.css('[type="text"]')).first().getText().then(join));
-    expect($p('[name="points"]').text()).toEqual(element.all(by.css('[name="points"]')).getText().then(join));
-    expect($p('[name="points"]:first').text()).toEqual(element.all(by.css('[name="points"]')).first().getText().then(join));
+    expect($p('[class="pet"]').text()).toEqual(element.all(by.css('[class="pet"]')).getText().then(join));
+    expect($p('[class="pet"]:first').text()).toEqual(element.all(by.css('[class="pet"]')).first().getText());
+    expect($p('[class="pet"]:last').text()).toEqual(element.all(by.css('[class="pet"]')).last().getText());
+    expect($p('#checkboxes').text()).toEqual(element.all(by.id('checkboxes')).getText().then(join));
+    expect($p('#checkboxes:first').text()).toEqual(element.all(by.id('checkboxes')).first().getText());
+    expect($p('#checkboxes:last').text()).toEqual(element.all(by.id('checkboxes')).last().getText());
     expect($p('[ng-model="username"]').text()).toEqual(element.all(by.model('username')).getText().then(join));
     expect($p('[ng-model="username"]:first').text()).toEqual(element.all(by.model('username')).first().getText().then(join));
-    expect($p('body').text()).toEqual(element.all(by.css('body')).getText().then(join));
-    expect($p('body:first').text()).toEqual(element.all(by.css('body')).first().getText().then(join));
-    expect($p('#checkboxes').text()).toEqual(element.all(by.id('checkboxes')).getText().then(join));
-    expect($p('#checkboxes:first').text()).toEqual(element.all(by.id('checkboxes')).first().getText().then(join));
+    expect($p('[ng-model="username"]:last').text()).toEqual(element.all(by.model('username')).last().getText().then(join));
     expect($p('{{username}}').text()).toEqual(element.all(by.binding('username')).getText().then(join));
-    expect($p('{{username}}:first').text()).toEqual(element.all(by.binding('username')).first().getText().then(join));
+    expect($p('{{username}}:first').text()).toEqual(element.all(by.binding('username')).first().getText());
+    expect($p('{{username}}:last').text()).toEqual(element.all(by.binding('username')).last().getText());
+    browser.get('index.html#/repeater');
+    expect($p('[ng-repeat="baz in days"]').text()).toEqual(element.all(by.repeater('baz in days')).getText().then(join));
+    expect($p('[ng-repeat="baz in days"]:first').text()).toEqual(element.all(by.repeater('baz in days')).first().getText());
+    expect($p('[ng-repeat="baz in days"]:last').text()).toEqual(element.all(by.repeater('baz in days')).last().getText());
   });
 
   it('Should get innerHTML using .html', function() {
-    expect($p('body').html()).toEqual(element.all(by.css('body')).first().getInnerHtml());
-    expect($p('body:first').html()).toEqual(element.all(by.css('body')).first().getInnerHtml());
+    expect($p('[class="pet"]').html()).toEqual(element.all(by.css('[class="pet"]')).first().getInnerHtml());
+    expect($p('[class="pet"]:first').html()).toEqual(element.all(by.css('[class="pet"]')).first().getInnerHtml());
+    expect($p('[class="pet"]:last').html()).toEqual(element.all(by.css('[class="pet"]')).last().getInnerHtml());
+    expect($p('#checkboxes').html()).toEqual(element.all(by.id('checkboxes')).first().getInnerHtml());
+    expect($p('#checkboxes:first').html()).toEqual(element.all(by.id('checkboxes')).first().getInnerHtml());
+    expect($p('#checkboxes:last').html()).toEqual(element.all(by.id('checkboxes')).last().getInnerHtml());
+    expect($p('[ng-model="username"]').html()).toEqual(element.all(by.model('username')).first().getInnerHtml());
+    expect($p('[ng-model="username"]:first').html()).toEqual(element.all(by.model('username')).first().getInnerHtml());
+    expect($p('[ng-model="username"]:last').html()).toEqual(element.all(by.model('username')).last().getInnerHtml());
     expect($p('{{username}}').html()).toEqual(element.all(by.binding('username')).first().getInnerHtml());
     expect($p('{{username}}:first').html()).toEqual(element.all(by.binding('username')).first().getInnerHtml());
+    expect($p('{{username}}:last').html()).toEqual(element.all(by.binding('username')).last().getInnerHtml());
+    browser.get('index.html#/repeater');
+    expect($p('[ng-repeat="baz in days"]').html()).toEqual(element.all(by.repeater('baz in days')).first().getInnerHtml());
+    expect($p('[ng-repeat="baz in days"]:first').html()).toEqual(element.all(by.repeater('baz in days')).first().getInnerHtml());
+    expect($p('[ng-repeat="baz in days"]:last').html()).toEqual(element.all(by.repeater('baz in days')).last().getInnerHtml());
   });
 });
 
@@ -127,21 +167,12 @@ describe('Proquery traversing: ', function() {
   });
 
   it('Should find children with supported selectors and psuedo selectors', function() {
-    expect($p('body').find('[type="text"]').length).toBe(element.all(by.css('body')).all(by.css('[type="text"]')).count());
-    expect($p('body').find('[name="points"]').length).toBe(element.all(by.css('body')).all(by.css('[name="points"]')).count());
-    expect($p('body').find('[ng-model="username"]').length).toBe(element.all(by.css('body')).all(by.model('username')).count());
-    expect($p('body').find('menu').length).toBe(element.all(by.css('body')).all(by.css('menu')).count());
+    expect($p('body').find('[class="pet"]').length).toBe(element.all(by.css('body')).all(by.css('[class="pet"]')).count());
     expect($p('body').find('#checkboxes').length).toBe(element.all(by.css('body')).all(by.id('checkboxes')).count());
+    expect($p('body').find('[ng-model="username"]').length).toBe(element.all(by.css('body')).all(by.model('username')).count());
     expect($p('body').find('{{username}}').length).toBe(element.all(by.css('body')).all(by.binding('username')).count());
-    expect($p('body').find('{{username}}:first').length).toBe(element.all(by.css('body')).all(by.binding('username')).first().isPresent().then(function() { return 1; }, function() { return 0; }));
-  });
-
-  it('Should expose existing APIs with .find, .filter, .get, .first, and .last', function() {
-    expect($p('body').find('[type="text"]').length).toBeDefined();
-    expect($p('body').filter(function() { return true; }).length).toBeDefined();
-    expect($p('body').get(0).length).toBeDefined();
-    expect($p('body').first().length).toBeDefined();
-    expect($p('body').last().length).toBeDefined();
+    browser.get('index.html#/repeater');
+    expect($p('body').find('[ng-repeat="baz in days"]').length).toEqual(element.all(by.css('body')).all(by.repeater('baz in days')).count());
   });
 
   it('Should support .filter and .filterNative', function() {
@@ -159,9 +190,22 @@ describe('Proquery traversing: ', function() {
   });
 
   it('Should support .get, .first, and .last', function() {
-    expect($p('[type="text"]').get(1).val()).toEqual(element.all(by.css('[type="text"]')).get(1).getAttribute('value'));
-    expect($p('[type="text"]').first().val()).toEqual(element.all(by.css('[type="text"]')).first().getAttribute('value'));
-    expect($p('[type="text"]').last().val()).toEqual(element.all(by.css('[type="text"]')).last().getAttribute('value'));
+    expect($p('[class="pet"]').get(0).val()).toBe(element.all(by.css('[class="pet"]')).get(0).getAttribute('value'));
+    expect($p('[class="pet"]').first().val()).toBe(element.all(by.css('[class="pet"]')).first().getAttribute('value'));
+    expect($p('[class="pet"]').last().val()).toBe(element.all(by.css('[class="pet"]')).last().getAttribute('value'));
+    expect($p('#checkboxes').get(0).val()).toBe(element.all(by.id('checkboxes')).get(0).getAttribute('value'));
+    expect($p('#checkboxes').first().val()).toBe(element.all(by.id('checkboxes')).first().getAttribute('value'));
+    expect($p('#checkboxes').last().val()).toBe(element.all(by.id('checkboxes')).last().getAttribute('value'));
+    expect($p('[ng-model="username"]').get(0).val()).toBe(element.all(by.model('username')).get(0).getAttribute('value'));
+    expect($p('[ng-model="username"]').first().val()).toBe(element.all(by.model('username')).first().getAttribute('value'));
+    expect($p('[ng-model="username"]').last().val()).toBe(element.all(by.model('username')).last().getAttribute('value'));
+    expect($p('{{username}}').get(0).val()).toBe(element.all(by.binding('username')).get(0).getAttribute('value'));
+    expect($p('{{username}}').first().val()).toBe(element.all(by.binding('username')).first().getAttribute('value'));
+    expect($p('{{username}}').last().val()).toBe(element.all(by.binding('username')).last().getAttribute('value'));
+    browser.get('index.html#/repeater');
+    expect($p('[ng-repeat="baz in days"]').get(0).val()).toEqual(element.all(by.repeater('baz in days')).get(0).getAttribute('value'));
+    expect($p('[ng-repeat="baz in days"]').first().val()).toEqual(element.all(by.repeater('baz in days')).first().getAttribute('value'));
+    expect($p('[ng-repeat="baz in days"]').last().val()).toEqual(element.all(by.repeater('baz in days')).last().getAttribute('value'));
   });
 
   it('Should fetch .row -> .column in ngRepeat', function() {
@@ -172,7 +216,6 @@ describe('Proquery traversing: ', function() {
 
   it('Should fetch .column -> .row in ngRepeat', function() {
     browser.get('index.html#/repeater');
-    var join = function(text) { return typeof text === 'string' ? text : text.join(''); };
     expect($p('[ng-repeat="baz in days"]').find('baz.initial').text()).toEqual(element.all(by.repeater('baz in days').column('baz.initial')).getText().then(join));
     expect($p('[ng-repeat="baz in days"]').find('baz.initial').get(1).text()).toEqual(element.all(by.repeater('baz in days').column('baz.initial').row(1)).getText().then(join));
   });
@@ -191,5 +234,13 @@ describe('Proquery traversing: ', function() {
     expect($p('{{greeting}}:first').eq(0).getText()).toBe(element(by.binding('greeting')).getWebElement().getText());
     expect($p('{{greeting}}').eq(-1)).toBeUndefined();
     expect($p('{{greeting}}').eq()).toBeUndefined();
+  });
+  
+  it('Should expose existing APIs with .find, .filter, .get, .first, and .last', function() {
+    expect($p('body').find('[type="text"]').length).toBeDefined();
+    expect($p('body').filter(function() { return true; }).length).toBeDefined();
+    expect($p('body').get(0).length).toBeDefined();
+    expect($p('body').first().length).toBeDefined();
+    expect($p('body').last().length).toBeDefined();
   });
 });

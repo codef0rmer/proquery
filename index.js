@@ -73,7 +73,7 @@ module.exports = function(selector) {
       if (value === '' || !!value) {
         return this.clear().then(function() { return this.sendKeys(value) }.bind(this)); 
       } else {
-        return typeof this.each === 'function' ? this.first().getAttribute('value') : this.getAttribute('value');
+        return typeof this.each === 'function' ? this.getNative(0).getAttribute('value') : this.getAttribute('value');
       }
     };
 
@@ -82,12 +82,12 @@ module.exports = function(selector) {
     };
 
     $p.html = function() {
-      var $this = typeof this.each === 'function' ? this.first() : this;
+      var $this = typeof this.each === 'function' ? this.getNative(0) : this;
       return $this.getInnerHtml().then(function(html) { return html; });
     };
 
     $p.attr = function(attribute) {
-      return typeof this.each === 'function' ? this.first().getAttribute(attribute) : this.getAttribute(attribute);
+      return typeof this.each === 'function' ? this.getNative(0).getAttribute(attribute) : this.getAttribute(attribute);
     };
 
     $p.animate = function(properties) {
@@ -130,11 +130,11 @@ module.exports = function(selector) {
     };
 
     $p.first = function() {
-      return exposePublicAPIs(this.firstNative());
+      return exposePublicAPIs(this.getNative(0));
     };
 
     $p.last = function() {
-      return exposePublicAPIs(this.lastNative());
+      return exposePublicAPIs(this.getNative(-1));
     };
 
     $p.find = init;

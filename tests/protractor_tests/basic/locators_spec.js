@@ -74,7 +74,6 @@ describe('locators', function() {
       expect($p('#shower:first').is(':visible')).toBe(true);
 
       var colors = element(by.model('show')).click();
-      var $colors = $p('[ng-model="show"]').click().click();
 
       expect(element(by.id('shower')).isDisplayed()).toBe(false);
       expect($p('#shower:first').is(':visible')).toBe(false);
