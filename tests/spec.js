@@ -1,5 +1,7 @@
 var $p = require('../index.js');
 var join = function(text) { return typeof text === 'string' ? text : text.join(''); };
+var ones = function() { return 1; };
+var zeros = function() { return 0; };
 
 describe('Proquery selectors: ', function() {
   beforeEach(function() {
@@ -37,17 +39,17 @@ describe('Proquery selectors: ', function() {
   });
   
   it('Should support :first and :last psuedo selectors', function() {
-    expect($p('[type="text"]:first').length).toEqual(element.all(by.css('[type="text"]')).first().isPresent().then(function() { return 1; }, function() { return 0; }));
-    expect($p('[type="text"]:last').length).toEqual(element.all(by.css('[type="text"]')).last().isPresent().then(function() { return 1; }, function() { return 0; }));
-    expect($p('#checkboxes:first').length).toEqual(element.all(by.id('checkboxes')).first().isPresent().then(function() { return 1; }, function() { return 0; }));
-    expect($p('#checkboxes:last').length).toEqual(element.all(by.id('checkboxes')).last().isPresent().then(function() { return 1; }, function() { return 0; }));
-    expect($p('[ng-model="username"]:first').length).toEqual(element.all(by.model('username')).first().isPresent().then(function() { return 1; }, function() { return 0; }));
-    expect($p('[ng-model="username"]:last').length).toEqual(element.all(by.model('username')).last().isPresent().then(function() { return 1; }, function() { return 0; }));
-    expect($p('{{username}}:first').length).toEqual(element.all(by.binding('username')).first().isPresent().then(function() { return 1; }, function() { return 0; }));
-    expect($p('{{username}}:last').length).toEqual(element.all(by.binding('username')).last().isPresent().then(function() { return 1; }, function() { return 0; }));
+    expect($p('[type="text"]:first').length).toEqual(element.all(by.css('[type="text"]')).first().isPresent().then(ones, zeros));
+    expect($p('[type="text"]:last').length).toEqual(element.all(by.css('[type="text"]')).last().isPresent().then(ones, zeros));
+    expect($p('#checkboxes:first').length).toEqual(element.all(by.id('checkboxes')).first().isPresent().then(ones, zeros));
+    expect($p('#checkboxes:last').length).toEqual(element.all(by.id('checkboxes')).last().isPresent().then(ones, zeros));
+    expect($p('[ng-model="username"]:first').length).toEqual(element.all(by.model('username')).first().isPresent().then(ones, zeros));
+    expect($p('[ng-model="username"]:last').length).toEqual(element.all(by.model('username')).last().isPresent().then(ones, zeros));
+    expect($p('{{username}}:first').length).toEqual(element.all(by.binding('username')).first().isPresent().then(ones, zeros));
+    expect($p('{{username}}:last').length).toEqual(element.all(by.binding('username')).last().isPresent().then(ones, zeros));
     browser.get('index.html#/repeater');
-    expect($p('[ng-repeat="baz in days"]:first').length).toEqual(element.all(by.repeater('baz in days')).first().isPresent().then(function() { return 1; }, function() { return 0; }));
-    expect($p('[ng-repeat="baz in days"]:last').length).toEqual(element.all(by.repeater('baz in days')).last().isPresent().then(function() { return 1; }, function() { return 0; }));
+    expect($p('[ng-repeat="baz in days"]:first').length).toEqual(element.all(by.repeater('baz in days')).first().isPresent().then(ones, zeros));
+    expect($p('[ng-repeat="baz in days"]:last').length).toEqual(element.all(by.repeater('baz in days')).last().isPresent().then(ones, zeros));
   });
   
   it('Should support :contains psuedo selector for anchor and button elements', function() {

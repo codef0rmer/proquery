@@ -5,14 +5,20 @@ module.exports = function(selector) {
     var $p,
         baseSelector    = selector.replace(/:first|:last$/, ''),
         psuedoSelector  = (selector.match(/:first|:last$/) || [""])[0].substr(1),
+        nestedSelector  = !!baseSelector.match(/\s+(?=[^\])}]*([\[({]|$))/), // consists of space but not within :contains()
         isLinkFilter    = baseSelector.indexOf('a:contains') === 0,
         isButtonFilter  = baseSelector.indexOf('button:contains') === 0,
-        isClass         = baseSelector.indexOf('.') === 0,
+        filterText      = !!baseSelector.match(/:contains\((.*)+\)/) && ( baseSelector.match(/:contains\((.*)+\)/)[1] || '' ).replace(/'/g, '').replace(/"/g, ''),
+        isClass         = nestedSelector || baseSelector.indexOf('.') === 0,
         isBinding       = !!baseSelector.match(/{{[A-Za-z0-9\.\|_]+\}}/g),
         isNgModel       = baseSelector.indexOf('[ng-model=') === 0,
         isNgRepeat      = baseSelector.indexOf('[ng-repeat=') === 0,
-        isId            = baseSelector.indexOf('#') === 0,
+        isNgOption      = baseSelector.indexOf('[ng-options=') === 0,
+        isId            = !nestedSelector && baseSelector.indexOf('#') === 0,
         context         = context || this;
+
+    // #animals ul .pet:contains("dog")
+    if (nestedSelector) baseSelector = baseSelector.split(':')[0];
 
     // :contains() for links and buttons
     if (isLinkFilter || isButtonFilter) baseSelector = ( baseSelector.match(/:contains\((.*)+\)/)[1] || '').replace(/'/g, '').replace(/"/g, '');
@@ -24,10 +30,12 @@ module.exports = function(selector) {
     if (isBinding) baseSelector = baseSelector.replace(/{|}/g, '');
 
     // skip "" or '' from ngModel
-    if (isNgModel || isNgRepeat) baseSelector = baseSelector.split('"')[1] || selector.split('\'')[1];
+    if (isNgModel || isNgRepeat || isNgOption) baseSelector = baseSelector.split('"')[1] || selector.split('\'')[1];
 
     if (context.locator && context.locator().toString().indexOf('by.repeater') >= 0) {
       $p = element.all(context.locator().column(baseSelector));
+    } else if (nestedSelector) {
+      $p = context.all(by.cssContainingText(baseSelector, filterText));
     } else if (isButtonFilter) {
       $p = context.all(by.partialButtonText(baseSelector));
     } else if (isLinkFilter) {
@@ -38,6 +46,8 @@ module.exports = function(selector) {
       $p = context.all(by.model(baseSelector));
     } else if (isNgRepeat) {
       $p = context.all(by.repeater(baseSelector));
+    } else if (isNgOption) {
+      $p = context.all(by.options(baseSelector));
     } else if (isId) {
       $p = context.all(by.id(baseSelector));
     } else {

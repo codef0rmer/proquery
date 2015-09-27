@@ -405,57 +405,63 @@ describe('locators', function() {
     });
   });
 
-  // describe('by css containing text', function() {
-  //   it('should find elements by css and partial text', function() {
-  //     element.all(by.cssContainingText('#animals ul .pet', 'dog')).then(function(arr) {
-  //       expect(arr.length).toEqual(2);
-  //       expect(arr[0].getAttribute('id')).toBe('bigdog');
-  //       expect(arr[1].getAttribute('id')).toBe('smalldog');
-  //     });
-  //   });
+  describe('by css containing text', function() {
+    it('should find elements by css and partial text', function() {
+      element.all(by.cssContainingText('#animals ul .pet', 'dog')).then(function(arr) {
+        expect(arr.length).toEqual(2);
+        expect(arr[0].getAttribute('id')).toBe('bigdog');
+        expect(arr[1].getAttribute('id')).toBe('smalldog');
+      });
 
-  //   it('should find elements with text-transform style', function() {
-  //     expect(element(by.cssContainingText('#transformedtext div', 'Uppercase'))
-  //         .getAttribute('id')).toBe('textuppercase');
-  //     expect(element(by.cssContainingText('#transformedtext div', 'Lowercase'))
-  //         .getAttribute('id')).toBe('textlowercase');
-  //     expect(element(by.cssContainingText('#transformedtext div', 'capitalize'))
-  //         .getAttribute('id')).toBe('textcapitalize');
-  //   });
-  // });
+      $p('#animals ul .pet:contains("dog")').then(function(arr) {
+        expect(arr.length).toEqual(2);
+        expect(arr[0].getAttribute('id')).toBe('bigdog');
+        expect(arr[1].getAttribute('id')).toBe('smalldog');
+      });
+    });
 
-  // describe('by options', function() {
-  //   it('should find elements by options', function() {
-  //     var allOptions = element.all(by.options('fruit for fruit in fruits'));
-  //     expect(allOptions.count()).toEqual(4);
+    it('should find elements with text-transform style', function() {
+      expect(element(by.cssContainingText('#transformedtext div', 'Uppercase')).getAttribute('id')).toBe('textuppercase');
+      expect($p('#transformedtext div:contains("Uppercase")').attr('id')).toBe('textuppercase');
+      expect(element(by.cssContainingText('#transformedtext div', 'Lowercase')).getAttribute('id')).toBe('textlowercase');
+      expect($p('#transformedtext div:contains("Lowercase")').attr('id')).toBe('textlowercase');
+      expect(element(by.cssContainingText('#transformedtext div', 'capitalize')).getAttribute('id')).toBe('textcapitalize');
+      expect($p('#transformedtext div:contains("capitalize")').attr('id')).toBe('textcapitalize');
+    });
+  });
 
-  //     var firstOption = allOptions.first();
-  //     expect(firstOption.getText()).toEqual('apple');
-  //   });
-  // });
+  describe('by options', function() {
+    it('should find elements by options', function() {
+      var allOptions = element.all(by.options('fruit for fruit in fruits'));
+      var $allOptions = $p('[ng-options="fruit for fruit in fruits"]');
+      expect(allOptions.count()).toEqual(4);
+      expect($allOptions.length).toEqual(4);
 
+      var firstOption = allOptions.first();
+      var $firstOption = $allOptions.first();
+      expect(firstOption.getText()).toEqual('apple');
+      expect($firstOption.text()).toEqual('apple');
+    });
+  });
+
+  // @todo
   // describe('by deep css', function() {
   //   beforeEach(function() {
   //     browser.get('index.html#/shadow');
   //   });
-
   //   // Shadow DOM is not currently supported outside of Chrome.
   //   browser.getCapabilities().then(function(capabilities) {
   //     if (capabilities.get('browserName') == 'chrome') {
-
   //       it('should find items inside the shadow DOM', function() {
   //         var parentHeading = element(by.deepCss('.parentshadowheading'));
   //         var olderChildHeading = element(by.deepCss('.oldershadowheading'));
   //         var youngerChildHeading = element(by.deepCss('.youngershadowheading'));
-
   //         expect(parentHeading.isPresent()).toBe(true);
   //         expect(olderChildHeading.isPresent()).toBe(true);
   //         expect(youngerChildHeading.isPresent()).toBe(true);
-
   //         expect(parentHeading.getText()).toEqual('Parent');
   //         expect(olderChildHeading.getText()).toEqual('Older Child');
   //         expect(youngerChildHeading.getText()).toEqual('Younger Child');
-
   //         expect(element(by.deepCss('.originalcontent')).getText())
   //             .toEqual('original content');
   //       });
@@ -463,14 +469,13 @@ describe('locators', function() {
   //   });
   // });
 
-  // it('should determine if an element is present', function() {
-  //   expect(browser.isElementPresent(by.binding('greet'))).toBe(true);
-  //   expect(browser.isElementPresent(by.binding('nopenopenope'))).toBe(false);
-  // });
+  it('should determine if an element is present', function() {
+    expect(browser.isElementPresent(by.binding('greet'))).toBe(true);
+    expect(browser.isElementPresent(by.binding('nopenopenope'))).toBe(false);
+  });
 
-  // it('should determine if an ElementFinder is present', function() {
-  //   expect(browser.isElementPresent(element(by.binding('greet')))).toBe(true);
-  //   expect(browser.isElementPresent(element(by.binding('nopenopenope'))))
-  //       .toBe(false);
-  // });
+  it('should determine if an ElementFinder is present', function() {
+    expect(browser.isElementPresent(element(by.binding('greet')))).toBe(true);
+    expect(browser.isElementPresent(element(by.binding('nopenopenope')))).toBe(false);
+  });
 });
