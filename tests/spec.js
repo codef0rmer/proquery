@@ -37,6 +37,14 @@ describe('Proquery selectors: ', function() {
     expect($p('[ng-repeat="baz in days"]').length).toBe(element.all(by.repeater('baz in days')).count());
     expect($p('[ng-repeat="baz in days | filter:\'T\'"]').length).toBe(element.all(by.repeater('baz in days | filter:\'T\'')).count());
   });
+
+  it('Should support ngOptions selector', function() {
+    expect($p('[ng-options="fruit for fruit in fruits"]').length).toEqual(element.all(by.options('fruit for fruit in fruits')).count());
+  });
+
+  it('Should support basic nested (with space only) selectors', function() {
+    expect($p('#animals ul .pet').length).toEqual(element.all(by.cssContainingText('#animals ul .pet')).count());
+  });
   
   it('Should support :first and :last psuedo selectors', function() {
     expect($p('[type="text"]:first').length).toEqual(element.all(by.css('[type="text"]')).first().isPresent().then(ones, zeros));
@@ -52,13 +60,16 @@ describe('Proquery selectors: ', function() {
     expect($p('[ng-repeat="baz in days"]:last').length).toEqual(element.all(by.repeater('baz in days')).last().isPresent().then(ones, zeros));
   });
   
-  it('Should support :contains psuedo selector for anchor and button elements', function() {
+  it('Should support :contains psuedo selector for anchor, button, and nested elements', function() {
     expect($p('a:contains(repeater)').length).toEqual(element.all(by.partialLinkText('repeater')).count());
     expect($p('a:contains(\'repeater\')').length).toEqual(element.all(by.partialLinkText('repeater')).count());
     expect($p('a:contains("repeater")').length).toEqual(element.all(by.partialLinkText('repeater')).count());
     expect($p('button:contains(text)').length).toEqual(element.all(by.partialButtonText('text')).count());
     expect($p('button:contains(\'text\')').length).toEqual(element.all(by.partialButtonText('text')).count());
     expect($p('button:contains("text")').length).toEqual(element.all(by.partialButtonText('text')).count());
+    expect($p('#animals ul .pet:contains(dog)').length).toEqual(element.all(by.cssContainingText('#animals ul .pet', 'dog')).count());
+    expect($p('#animals ul .pet:contains(\'dog\')').length).toEqual(element.all(by.cssContainingText('#animals ul .pet', 'dog')).count());
+    expect($p('#animals ul .pet:contains("dog")').length).toEqual(element.all(by.cssContainingText('#animals ul .pet', 'dog')).count());
   });
 
   it('Should support native :checked psuedo selectors with <option>', function() {
