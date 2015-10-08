@@ -22,6 +22,7 @@
     "tests"
   ],
   "devDependencies": {
-    "angular": "~1.4.4"
+    "angular": "latest",
+    "angular-sanitize": "latest"
   }
 }

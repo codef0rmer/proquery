@@ -2,13 +2,17 @@ module.exports = function(selector) {
   var init = function(selector, context) {
     if (typeof selector === 'object') return exposePublicAPIs(selector);
 
+    if (switchToDefault(this)) browser.driver.switchTo().defaultContent();
+
     var $p,
-        baseSelector    = selector.replace(/:first|:last$/, ''),
+        isIFrame        = !!selector.match(/^iframe[#.]/),
+        baseSelector    = isIFrame ? selector.replace(/^iframe([#.])/, '$1') : selector.replace(/:first|:last$/, ''),
         psuedoSelector  = (selector.match(/:first|:last$/) || [""])[0].substr(1),
         nestedSelector  = !!baseSelector.match(/\s+(?=[^\])}]*([\[({]|$))/), // consists of space but not within :contains()
         isLinkFilter    = baseSelector.indexOf('a:contains') === 0,
         isButtonFilter  = baseSelector.indexOf('button:contains') === 0,
         filterText      = !!baseSelector.match(/:contains\((.*)+\)/) && ( baseSelector.match(/:contains\((.*)+\)/)[1] || '' ).replace(/'/g, '').replace(/"/g, ''),
+        atIndex         = parseInt(!!baseSelector.match(/:eq\((.*)+\)/) && baseSelector.match(/:eq\((.*)+\)/)[1] || -1, false),
         isClass         = nestedSelector || baseSelector.indexOf('.') === 0,
         isBinding       = !!baseSelector.match(/{{[A-Za-z0-9\.\|_]+\}}/g),
         isNgModel       = baseSelector.indexOf('[ng-model=') === 0,
@@ -22,6 +26,9 @@ module.exports = function(selector) {
 
     // :contains() for links and buttons
     if (isLinkFilter || isButtonFilter) baseSelector = ( baseSelector.match(/:contains\((.*)+\)/)[1] || '').replace(/'/g, '').replace(/"/g, '');
+    
+    // :eq() for elements by id
+    if (atIndex >= 0) baseSelector = baseSelector.replace(/:eq\((.*)+\)/, '');
 
     // skip # from ID
     if (isId) baseSelector = baseSelector.substr(1);
@@ -54,7 +61,21 @@ module.exports = function(selector) {
       $p = context.all(by.css(baseSelector));
     }
 
-    return exposePublicAPIs($p, psuedoSelector, {context: context, isNgRepeat: isNgRepeat});
+    if (atIndex >= 0) {
+      $p = $p.get(atIndex);
+    }
+
+    $p = exposePublicAPIs($p, psuedoSelector, {
+      context       : context,
+      baseSelector  : baseSelector,
+      isNgRepeat    : isNgRepeat,
+      isIFrame      : isIFrame,
+      isClass       : isClass,
+      atIndex       : atIndex,
+      isId          : isId
+    });
+
+    return $p;
   };
 
   var exposePublicAPIs = function($p, psuedoSelector, opts) {
@@ -132,11 +153,15 @@ module.exports = function(selector) {
     };
 
     $p.get = function(elementIndex) {
+      var that;
       if (opts && opts.isNgRepeat) {
-        return exposePublicAPIs(opts.context.all(this.locator().row(elementIndex)));
+        that = exposePublicAPIs(opts.context.all(this.locator().row(elementIndex)));
       } else {
-        return exposePublicAPIs(this.getNative(elementIndex));
+        if (opts) opts.atIndex = elementIndex;
+        that = exposePublicAPIs(this.getNative(elementIndex), '', opts);
       }
+      
+      return that;
     };
 
     $p.first = function() {
@@ -147,6 +172,38 @@ module.exports = function(selector) {
       return exposePublicAPIs(this.getNative(-1));
     };
 
+    $p.contents = function() {
+      var $that;
+
+      if (typeof this.each === 'function') {
+        opts.atIndex = 0;
+        $that = this.first();
+      } else {
+        $that = this;
+      }
+
+      if (opts && opts.isIFrame) {
+        if (opts.isId) {
+          browser.driver.switchTo().frame(browser.driver.findElement(protractor.By.id(opts.baseSelector)));
+        } else {
+          browser.driver.switchTo().frame(browser.driver.findElement(protractor.By.css(opts.baseSelector)));
+        }
+      } else if (opts && opts.atIndex >= 0) {
+        browser.driver.switchTo().frame(opts.atIndex);
+      }
+      
+      // this is a first-timer dummy .find method for frames that overrides 
+      // `this` (which is NodeJS process object) with Protractor `element`.
+      // Howerver, for nested .find calls, the default one will be used.
+      $that.find = function(selector) {
+        var self;
+        self = init.call(this, selector, element);
+        return self;
+      };
+
+      return $that;
+    };
+
     $p.find = init;
 
     return $p;
@@ -154,3 +211,7 @@ module.exports = function(selector) {
 
   return init(selector, element);
 };
+
+function switchToDefault(self) {
+  return typeof self.process === 'object';
+}

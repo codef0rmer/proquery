@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html ng-app="App">
+<head>
+  <title>Proquery Test Application</title>
+  <script type="text/javascript">
+    // hack to reuse protractor configuration file (NodeJS) inside a browser
+    var exports = {};
+  </script>
+  <script type="text/javascript" src="../../protractor.conf.js"></script>
+  <script type="text/javascript" src="../../bower_components/angular/angular.js"></script>
+  <script type="text/javascript" src="../../bower_components/angular-sanitize/angular-sanitize.js"></script>
+  <script type="text/javascript">
+    angular.module('App', []).run(function($rootScope, $sce) {
+      $rootScope.src = function() {
+        return  $sce.trustAsResourceUrl(exports.config.baseUrl);
+      };
+      $rootScope.width = window.innerWidth;
+      $rootScope.height = window.innerHeight;
+    });
+  </script>
+</head>
+<body style="margin:0px;padding:0px;">
+  <iframe id="frame1" class="frame1" border="1" ng-src="{{::src()}}" width="{{::width}}" height="{{::height}}"></iframe>
+  <iframe id="frame2" class="frame2" border="1" ng-src="{{::src()}}" width="{{::width}}" height="{{::height}}"></iframe>
+</body>
+</html>

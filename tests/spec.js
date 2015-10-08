@@ -1,7 +1,46 @@
+global.join = function(text) { return typeof text === 'string' ? text : text.join(''); };
+global.ones = function() { return 1; };
+global.zeros = function() { return 0; };
 var $p = require('../index.js');
-var join = function(text) { return typeof text === 'string' ? text : text.join(''); };
-var ones = function() { return 1; };
-var zeros = function() { return 0; };
+
+describe('Proquery frame', function() {
+  beforeEach(function() {
+    browser.get('http://localhost:9920/tests/testapp/index.html');
+  });
+
+  it('Should switch back to Default Content for initial query', function() {
+    browser.driver.switchTo().frame(0);
+    expect($p('iframe').length).toBe(2);
+  });
+
+  it('Should get iframes with :eq psuedo selector', function() {
+    expect($p('iframe:eq(0)').attr('class')).toEqual('frame1');
+    expect($p('iframe:eq(1)').attr('class')).toEqual('frame2');
+  });
+
+  it('Should select iframe by Id/Class with `iframe` prefix', function() {
+    expect($p('iframe#frame2').attr('class')).toEqual('frame2');
+    expect($p('iframe.frame1').attr('id')).toEqual('frame1');
+  });
+
+  it('Should support .contents with .find for iframes', function() {
+    expect($p('iframe:eq(1)').contents().find('div').length).toBe(20);
+    expect($p('iframe#frame2').contents().find('div').length).toBe(20);
+    expect($p('iframe.frame1').contents().find('div').length).toBe(20);
+  });
+
+  it('Should support .contents with .get for iframes', function() {
+    expect($p('iframe').get(1).contents().find('div').length).toBe(20);
+  });
+
+  it('Should support nested .find', function() {
+    expect($p('iframe:eq(1)').contents().find('body').find('div').length).toBe(20);
+    expect($p('iframe#frame2').contents().find('body').find('div').length).toBe(20);
+    expect($p('iframe.frame1').contents().find('body').find('div').length).toBe(20);
+    expect($p('iframe').get(1).contents().find('body').find('div').length).toBe(20);
+    expect($p('iframe').contents().find('body').find('div').length).toBe(20);
+  });
+});
 
 describe('Proquery selectors: ', function() {
   beforeEach(function() {
@@ -219,6 +258,15 @@ describe('Proquery traversing: ', function() {
     expect($p('[ng-repeat="baz in days"]').get(0).val()).toEqual(element.all(by.repeater('baz in days')).get(0).getAttribute('value'));
     expect($p('[ng-repeat="baz in days"]').first().val()).toEqual(element.all(by.repeater('baz in days')).first().getAttribute('value'));
     expect($p('[ng-repeat="baz in days"]').last().val()).toEqual(element.all(by.repeater('baz in days')).last().getAttribute('value'));
+  });
+
+  it('Should support :eq alternative to .get', function() {
+    expect($p('[class="pet"]:eq(0)').val()).toBe($p('[class="pet"]').get(0).val());
+    expect($p('#checkboxes:eq(0)').val()).toBe($p('#checkboxes').get(0).val());
+    expect($p('[ng-model="username"]:eq(0)').val()).toBe($p('[ng-model="username"]').get(0).val());
+    expect($p('{{username}}:eq(0)').val()).toBe($p('{{username}}').get(0).val());
+    browser.get('index.html#/repeater');
+    expect($p('[ng-repeat="baz in days"]:eq(0)').val()).toBe($p('[ng-repeat="baz in days"]').get(0).val());
   });
 
   it('Should fetch .row -> .column in ngRepeat', function() {
