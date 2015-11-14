@@ -24,21 +24,21 @@ describe('Proquery frame', function() {
   });
 
   it('Should support .contents with .find for iframes', function() {
-    expect($p('iframe:eq(1)').contents().find('div').length).toBe(20);
-    expect($p('iframe#frame2').contents().find('div').length).toBe(20);
-    expect($p('iframe.frame1').contents().find('div').length).toBe(20);
+    expect($p('iframe:eq(1)').contents().find('div').length).toBe(21);
+    expect($p('iframe#frame2').contents().find('div').length).toBe(21);
+    expect($p('iframe.frame1').contents().find('div').length).toBe(21);
   });
 
   it('Should support .contents with .get for iframes', function() {
-    expect($p('iframe').get(1).contents().find('div').length).toBe(20);
+    expect($p('iframe').get(1).contents().find('div').length).toBe(21);
   });
 
   it('Should support nested .find', function() {
-    expect($p('iframe:eq(1)').contents().find('body').find('div').length).toBe(20);
-    expect($p('iframe#frame2').contents().find('body').find('div').length).toBe(20);
-    expect($p('iframe.frame1').contents().find('body').find('div').length).toBe(20);
-    expect($p('iframe').get(1).contents().find('body').find('div').length).toBe(20);
-    expect($p('iframe').contents().find('body').find('div').length).toBe(20);
+    expect($p('iframe:eq(1)').contents().find('body').find('div').length).toBe(21);
+    expect($p('iframe#frame2').contents().find('body').find('div').length).toBe(21);
+    expect($p('iframe.frame1').contents().find('body').find('div').length).toBe(21);
+    expect($p('iframe').get(1).contents().find('body').find('div').length).toBe(21);
+    expect($p('iframe').contents().find('body').find('div').length).toBe(21);
   });
 });
 
@@ -114,6 +114,13 @@ describe('Proquery selectors: ', function() {
   it('Should support native :checked psuedo selectors with <option>', function() {
     expect($p('[ng-model="fruit"]').find('option').length).toBe(4);
     expect($p('[ng-model="fruit"]').find('option:checked').length).toBe(1);
+  });
+
+  it('Should find activeElement with :focus', function() {
+    var text = 'FOCUS IS HERE..!';
+    expect($p(':focus').val()).not.toBe(text);
+    $p('[ng-model="username"]').val(text);
+    expect($p(':focus').val()).toBe(text);
   });
 });
 

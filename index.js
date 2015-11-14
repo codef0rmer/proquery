@@ -5,6 +5,7 @@ module.exports = function(selector) {
     if (switchToDefault(this)) browser.driver.switchTo().defaultContent();
 
     var $p,
+        isActiveElement = selector === ':focus',
         isIFrame        = !!selector.match(/^iframe[#.]/),
         baseSelector    = isIFrame ? selector.replace(/^iframe([#.])/, '$1') : selector.replace(/:first|:last$/, ''),
         psuedoSelector  = (selector.match(/:first|:last$/) || [""])[0].substr(1),
@@ -39,7 +40,9 @@ module.exports = function(selector) {
     // skip "" or '' from ngModel
     if (isNgModel || isNgRepeat || isNgOption) baseSelector = baseSelector.split('"')[1] || selector.split('\'')[1];
 
-    if (context.locator && context.locator().toString().indexOf('by.repeater') >= 0) {
+    if (isActiveElement) {
+      $p = browser.driver.switchTo().activeElement();
+    } else if (context.locator && context.locator().toString().indexOf('by.repeater') >= 0) {
       $p = element.all(context.locator().column(baseSelector));
     } else if (nestedSelector) {
       $p = context.all(by.cssContainingText(baseSelector, filterText));
@@ -90,7 +93,12 @@ module.exports = function(selector) {
       try {
         $p.length = $p.count().then(function(length) { return length; }, function() { return 0; });
       } catch(e) {
-        $p.length = $p.isPresent().then(function() { return 1; }, function() { return 0; });
+        try {
+          $p.length = $p.isPresent().then(function() { return 1; }, function() { return 0; });
+        } catch(e) {
+          // for browser.driver.switchTo().activeElement() call mostly
+          $p.length = $p.then(function() { return 1; }, function() { return 0; });
+        }
       }
     }
 
