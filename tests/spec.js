@@ -3,6 +3,45 @@ global.ones = function() { return 1; };
 global.zeros = function() { return 0; };
 var $p = require('../index.js');
 
+describe('Proquery functions: ', function() {
+  beforeEach(function() {
+    browser.get('index.html#/form');
+  });
+
+  it('Should not support .find, .contents over filtered elements', function() {
+    var $filteredElements = $p('#animals').find('ul').find('li').filter(function(elem) {
+      return $p(elem).text().then(function(text) {
+        return text === 'big dog';
+      });
+    });
+    expect($filteredElements.val).toBeDefined();
+    expect($filteredElements.find).toBeUndefined();
+    expect($filteredElements.contents).toBeUndefined();
+  });
+
+  it('Should not support .get, .first, .last, .find over selected elements', function() {
+    var $getElements = $p('#animals').find('ul').find('li').get(0);
+    expect($getElements.contents).toBeDefined();
+    expect($getElements.get).toBeUndefined();
+    expect($getElements.first).toBeUndefined();
+    expect($getElements.last).toBeUndefined();
+    expect($getElements.find).toBeUndefined();
+  });
+
+  it('Should not support .contents over searched elements', function() {
+    var $findElements = $p('[ng-model="fruit"]').find('option');
+    expect($findElements.find).toBeDefined();
+    expect($findElements.contents).toBeUndefined();
+  });
+
+  it('Should only support .find over iframe content', function() {
+    browser.get('http://localhost:9920/tests/testapp/index.html');
+    var $iframeContents = $p('iframe:eq(1)').contents();
+    expect($iframeContents.find).toBeDefined();
+    expect($iframeContents.contents).toBeUndefined();
+  });
+});
+
 describe('Proquery frame', function() {
   beforeEach(function() {
     browser.get('http://localhost:9920/tests/testapp/index.html');
