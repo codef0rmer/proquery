@@ -4,6 +4,13 @@ The goal of this project is to help writing Integration Tests faster than ever. 
 ## Prior Art
 https://github.com/angular/protractor/issues/397
 
+## Development
+Resolve NPM and Bower depedencies,
+```sh
+$ npm install
+$ bower install
+```
+
 ## Testing
 To run tests against Protractor testapp:
 ```sh
