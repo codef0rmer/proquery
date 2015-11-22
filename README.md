@@ -25,6 +25,10 @@ $ npm test
 
 Refer tests/spec.js or tests/protractor_tests/ for more help.
 
+```js
+var $p = require('proquery');
+```
+
 | Proquery Selector     | Protractor Selector | Description
 | --------------------- | ------------------- | ------------------
 | $p('iframe').length | element.all(by.css('iframe')).count() | count elements

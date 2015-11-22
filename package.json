@@ -1,6 +1,6 @@
 {
   "name": "proquery",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "jQuery like syntactical sugar for Protractor",
   "main": "index.js",
   "scripts": {
