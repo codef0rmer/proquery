@@ -2,6 +2,7 @@
   "name": "proquery",
   "version": "1.0.0",
   "description": "jQuery like syntactical sugar for Protractor",
+  "homepage": "https://github.com/codef0rmer/proquery",
   "main": "index.js",
   "scripts": {
     "start": "./node_modules/http-server/bin/http-server ./ -p 9920",
@@ -11,9 +12,13 @@
     "protractor"
   ],
   "author": "Amit Gharat <amit.2006.it@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:codef0rmer/proquery.git"
+  },
   "license": "MIT",
   "devDependencies": {
     "http-server": "^0.8.5",
-    "protractor": "^2.5.1"
+    "protractor": "^3.0.0"
   }
 }

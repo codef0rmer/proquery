@@ -1,0 +1,18 @@
+machine:
+  node:
+    version: 4.1.2
+
+test:
+  pre:
+    - npm install --quiet -g bower
+    - bower install --force-latest
+    - webdriver-manager update --standalone
+    - webdriver-manager start:
+        background: true
+    - wget https://github.com/angular/protractor/archive/master.zip && unzip master.zip && cd protractor-master && npm install
+    - (cd protractor-master && npm start):
+        background: true
+    - sleep 2
+    - npm start:
+        background: true
+    - sleep 2

@@ -1,4 +1,6 @@
 # Proquery
+[![Circle CI](https://img.shields.io/circleci/project/codef0rmer/proquery/master.svg)](https://circleci.com/gh/codef0rmer/proquery)
+
 The goal of this project is to help writing Integration Tests faster than ever. As everybody is pretty familiar with jQuery and it's nifty selectors for querying DOM, I decided to use jQuery approach to query elements wihout using Protractor Jargons. If you think in jQuery, you do not even have to groak Proquery API :-)
 
 ## Prior Art
@@ -31,6 +33,11 @@ $ npm test
 ## API Docs
 
 Refer tests/spec.js or tests/protractor_tests/ for more help.
+
+```sh
+$ npm install -g proquery
+
+```
 
 ```js
 var $p = require('proquery');
@@ -78,4 +85,5 @@ var $p = require('proquery');
 ## Todos
 - [ ] Support for .switchTo() popup windows
 - [ ] Support by.exactBinding and by.buttonText to map exact text instead of partial
-- [ ] find a jQuery-like API for .switchTo().alert()
+- [ ] Find a jQuery-like API for .switchTo().alert()
+- [ ] Support KEYS using .trigger method e.g. .trigger('enter') over .sendKeys(protractor.Key.ENTER)
