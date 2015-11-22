@@ -1,5 +1,6 @@
 # Proquery
 [![Circle CI](https://img.shields.io/circleci/project/codef0rmer/proquery/master.svg)](https://circleci.com/gh/codef0rmer/proquery)
+[![npm](https://img.shields.io/npm/dm/proquery.svg)](https://www.npmjs.com/package/proquery)
 
 The goal of this project is to help writing Integration Tests faster than ever. As everybody is pretty familiar with jQuery and it's nifty selectors for querying DOM, I decided to use jQuery approach to query elements wihout using Protractor Jargons. If you think in jQuery, you do not even have to groak Proquery API :-)
 
