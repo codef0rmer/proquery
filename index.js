@@ -73,32 +73,30 @@ Proquery.prototype.init = function(sel_or_ptor, context) {
   if (isActiveElement) {
     $p = browser.driver.switchTo().activeElement();
   } else if (context.locator && context.locator().toString().indexOf('by.repeater') >= 0) {
-    $p = element.all(context.locator().column(baseSelector));
+    $p = isFirst() ? isChained() ? context.element(context.locator().column(baseSelector)) : context(context.locator().column(baseSelector)) : element.all(context.locator().column(baseSelector));
   } else if (nestedSelector) {
-    $p = context.all(by.cssContainingText(baseSelector, filterText));
+    $p = isFirst() ? isChained() ? context.element(by.cssContainingText(baseSelector, filterText)) : context(by.cssContainingText(baseSelector, filterText)) : context.all(by.cssContainingText(baseSelector, filterText));
   } else if (isButtonFilter) {
-    $p = context.all(by.partialButtonText(baseSelector));
+    $p = isFirst() ? isChained() ? context.element(by.partialButtonText(baseSelector)) : context(by.partialButtonText(baseSelector)) : context.all(by.partialButtonText(baseSelector));
   } else if (isLinkFilter) {
-    $p = context.all(by.partialLinkText(baseSelector));
+    $p = isFirst() ? isChained() ? context.element(by.partialLinkText(baseSelector)) : context(by.partialLinkText(baseSelector)) : context.all(by.partialLinkText(baseSelector));
   } else if (isBinding) {
-    $p = context.all(by.binding(baseSelector));
+    $p = isFirst() ? isChained() ? context.element(by.binding(baseSelector)) : context(by.binding(baseSelector)) : context.all(by.binding(baseSelector));
   } else if (isNgModel) {
-    $p = context.all(by.model(baseSelector));
+    $p = isFirst() ? isChained() ? context.element(by.model(baseSelector)) : context(by.model(baseSelector)) : context.all(by.model(baseSelector));
   } else if (isNgRepeat) {
-    $p = context.all(by.repeater(baseSelector));
+    $p = isFirst() ? isChained() ? context.element(by.repeater(baseSelector)) : context(by.repeater(baseSelector)) : context.all(by.repeater(baseSelector));
   } else if (isNgOption) {
-    $p = context.all(by.options(baseSelector));
+    $p = isFirst() ? isChained() ? context.element(by.options(baseSelector)) : context(by.options(baseSelector)) : context.all(by.options(baseSelector));
   } else if (isId) {
-    $p = context.all(by.id(baseSelector));
+    $p = isFirst() ? isChained() ? context.element(by.id(baseSelector)) : context(by.id(baseSelector)) : context.all(by.id(baseSelector));
   } else {
-    $p = context.all(by.css(baseSelector));
+    $p = isFirst() ? isChained() ? context.element(by.css(baseSelector)) : context(by.css(baseSelector)) : context.all(by.css(baseSelector));
   }
 
   if (atIndex >= 0) {
     $p = $p.get(atIndex);
-  } else if (psuedoSelector === 'first') {
-    $p = $p.first();
-  } else if (psuedoSelector === 'last') {
+  } else if (isLast()) {
     $p = $p.last();
   }
 
@@ -111,6 +109,18 @@ Proquery.prototype.init = function(sel_or_ptor, context) {
     atIndex       : atIndex,
     isId          : isId
   }, isProqueried ? 'FIND' : '');
+
+  function isFirst() {
+    return psuedoSelector === 'first';
+  }
+
+  function isLast() {
+    return psuedoSelector === 'last';
+  }
+
+  function isChained() {
+    return typeof context !== 'function';
+  }
 
   return $p;
 };
