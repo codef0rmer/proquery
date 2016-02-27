@@ -16,13 +16,15 @@ var REGEX_PSUEDO_SELECTOR_LINK            = /^a:contains/;
 var REGEX_PSUEDO_SELECTOR_BUTTON          = /^button:contains/;
 var REGEX_PSUEDO_SELECTOR_FIRST_OR_LAST   = /:first|:last$/;
 
-var ALL_FUNCTIONS    = ['length', 'val', 'text', 'html', 'attr', 'animate', 'is', 'filter', 'eq', 'get', 'first', 'last', 'contents', 'find'];
-var FIND_FUNCTIONS   = ['length', 'val', 'text', 'html', 'attr', 'animate', 'is', 'filter', 'eq', 'get', 'first', 'last', 'find'];
-var FILTER_FUNCTIONS = ['length', 'val', 'text', 'html', 'attr', 'animate', 'is', 'filter', 'eq', 'get', 'first', 'last'];
-var GET_FUNCTIONS    = ['length', 'val', 'text', 'html', 'attr', 'animate', 'is', 'filter', 'eq', 'contents'];
+var ALL_FUNCTIONS    = ['length', 'val', 'text', 'html', 'attr', 'animate', 'is', 'filter', 'eq', 'get', 'first', 'last', 'contents', 'find', 'end'];
+var FIND_FUNCTIONS   = ['length', 'val', 'text', 'html', 'attr', 'animate', 'is', 'filter', 'eq', 'get', 'first', 'last', 'find', 'end'];
+var FILTER_FUNCTIONS = ['length', 'val', 'text', 'html', 'attr', 'animate', 'is', 'filter', 'eq', 'get', 'first', 'last', 'end'];
+var GET_FUNCTIONS    = ['length', 'val', 'text', 'html', 'attr', 'animate', 'is', 'filter', 'eq', 'contents', 'end'];
 var FIRST_FUNCTIONS  = ['length', 'val', 'text', 'html', 'attr', 'animate', 'is', 'eq'];
 
-function Proquery(sel_or_ptor) {
+function Proquery(sel_or_ptor, useOriginal) {
+  // For native $ behavior that returns a single matched element,
+  if (useOriginal === true) return element(by.css(sel_or_ptor));
   return Proquery.prototype.init(sel_or_ptor, element);
 }
 
@@ -65,10 +67,6 @@ Proquery.prototype.init = function(sel_or_ptor, context) {
 
   // skip "" or '' from ngModel
   if (isNgModel || isNgRepeat || isNgOption) baseSelector = baseSelector.split('"')[1] || baseSelector.split('\'')[1];
-
-  if (!isProqueried) {
-    browser.driver.switchTo().defaultContent();
-  }
 
   if (isActiveElement) {
     $p = browser.driver.switchTo().activeElement();
@@ -143,7 +141,7 @@ Proquery.prototype.extend = function($p, opts, action) {
       },
       val = function(value) {
         if (value === '' || !!value) {
-          return this.clear().then(function() { return this.sendKeys(value) }.bind(this)); 
+          return this.clear() && this.sendKeys(value); 
         } else {
           return typeof this.each === 'function' ? this.getNative(0).getAttribute('value') : this.getAttribute('value');
         }
@@ -152,8 +150,7 @@ Proquery.prototype.extend = function($p, opts, action) {
         return this.getText().then(function(text) { return typeof text === 'string' ? text : text.join(''); });
       },
       html = function() {
-        var $this = typeof this.each === 'function' ? this.getNative(0) : this;
-        return $this.getInnerHtml().then(function(html) { return html; });
+        return (typeof this.each === 'function' ? this.getNative(0) : this).getInnerHtml();
       },
       attr = function(attribute) {
         return typeof this.each === 'function' ? this.getNative(0).getAttribute(attribute) : this.getAttribute(attribute);
@@ -202,6 +199,10 @@ Proquery.prototype.extend = function($p, opts, action) {
       last = function() {
         return Proquery.prototype.extend(this.getNative(-1), {}, 'FIRST');
       },
+      end = function() {
+        browser.driver.switchTo().defaultContent();
+        return this;
+      },
       contents = function() {
         var $that;
 
@@ -232,9 +233,13 @@ Proquery.prototype.extend = function($p, opts, action) {
           self = Proquery.prototype.init.call(this, selector, element);
           return self;
         };
-
+        $that.end = function() {
+          browser.driver.switchTo().defaultContent();
+          return this;
+        };
         return $that;
       };
+
 
   // backup native methods before overriding
   $p.filterNative = $p.filter;
@@ -272,6 +277,7 @@ Proquery.prototype.extend = function($p, opts, action) {
       }
     });
   }
+
   $p.length = $p.length();
 
   return $p;
