@@ -41,53 +41,63 @@ $ npm install -g proquery
 ```
 
 ```js
-var $p = require('proquery');
+var $ = require('proquery');
 ```
+As per Protractor API, `$` matches a single element, however, Proquery's `$` matches multiple elements by default. For the old behavior use:
+```sh
+$ $('.menu', true).getTagName())
+```
+The second parameter is `useOriginal` and will match a single element instead.
 
-| Proquery Selectors                                         | Protractor Selectors
-| ---------------------------------------------------------- | ----------------------------------------------------------------------------
-| $p('iframe').length                                        | element.all(by.css('iframe')).count() 
-| $p('[type="text"]')                                        | element.all(by.css('[type="text"]')) 
-| $p('textarea')                                             | element.all(by.css('textarea')) 
-| $p('.menu')                                                | element.all(by.css('.menu')) 
-| $p('#checkboxes')                                          | element.all(by.id('checkboxes')) 
-| $p('[ng-model="username"]')                                | element.all(by.model('username')) 
-| $p('{{username}}')                                         | element.all(by.binding('username')) 
-| $p('[ng-repeat="baz in days"]')                            | element.all(by.repeater('baz in days')) 
-| $p('[ng-options="fruit for fruit in fruits"]')             | element.all(by.options('fruit for fruit in fruits')) 
-| $p('#animals ul .pet')                                     | element.all(by.cssContainingText('#animals ul .pet')) 
-| $p('[type="text"]:first')                                  | element.all(by.css('[type="text"]')).first() 
-| $p('[type="text"]:last')                                   | element.all(by.css('[type="text"]')).last() 
-| $p('a:contains("repeater")')                               | element.all(by.partialLinkText('repeater')) 
-| $p('button:contains("text")')                              | element.all(by.partialButtonText('text')) 
-| $p('#animals ul .pet:contains("dog")')                     | element.all(by.cssContainingText('#animals ul .pet', 'dog')) 
-| $p('[ng-model="fruit"]').find('option')                    | element.all(by.model('fruit')).all(by.css('option') 
-| $p('[ng-model="fruit"]').find('option:checked')            | element.all(by.model('fruit')).all(by.css('option:checked') 
-| $p(':focus')                                               | browser.driver.switchTo().activeElement() 
-| $p('[class="pet"]').attr('value')                          | element.all(by.css('[class="pet"]')).first().getAttribute('value') 
-| $p('[class="pet"]:first').val()                            | element(by.css('[class="pet"]')).getAttribute('value') 
-| $p('[type="text"]:first').val('')                          | element(by.css('[type="text"]')).clear() 
-| $p('[type="text"]:first').val('codef0rmer')                | element(by.css('[type="text"]')).sendKeys('codef0rmer') 
-| $p('[class="pet"]:first').text()                           | element(by.css('[class="pet"]')).getText() 
-| $p('[class="pet"]:first').html()                           | element(by.css('[class="pet"]')).first().getInnerHtml() 
-| $p('body').find('[class="pet"]')                           | element.all(by.css('body')).all(by.css('[class="pet"]')) 
-| $p('[class="pet"]').get(0)                                 | element.all(by.css('[class="pet"]')).get(0) 
-| $p('[class="pet"]:eq(0)')                                  | element.all('[class="pet"]').get(0).getWebElement()
-| $p('[ng-repeat="baz in days"]').get(0)                     | element(by.repeater('baz in days').row(0)) 
-| $p('[ng-repeat="baz in days"]').get(0).find('baz.initial') | element(by.repeater('baz in days').row(0).column('baz.initial')) 
-| $p('[ng-repeat="baz in days"]').find('baz.initial')        | element.all(by.repeater('baz in days').column('baz.initial')) 
-| $p('[ng-repeat="baz in days"]').find('baz.initial').get(1) | element.all(by.repeater('baz in days').column('baz.initial').row(1)) 
-| $p('#checkboxes:first').is(':present')                     | element(by.id('checkboxes')).isPresent() 
-| $p('#checkboxes:first').is(':visible')                     | element(by.id('checkboxes')).isDisplayed() 
-| $p('#checkboxes:first').is(':checked')                     | element(by.id('checkboxes')).isSelected() 
-| $p('{{greeting}}').eq(0)                                   | element.all(by.binding('greeting')).get(0).getWebElement() 
+
+| Proquery Selectors                                        | Protractor Selectors
+| --------------------------------------------------------- | ----------------------------------------------------------------------------
+| $('iframe').length                                        | element.all(by.css('iframe')).count() 
+| $('[type="text"]')                                        | element.all(by.css('[type="text"]')) 
+| $('textarea')                                             | element.all(by.css('textarea')) 
+| $('.menu')                                                | element.all(by.css('.menu')) 
+| $('#checkboxes')                                          | element.all(by.id('checkboxes')) 
+| $('[ng-model="username"]')                                | element.all(by.model('username')) 
+| $('{{username}}')                                         | element.all(by.binding('username')) 
+| $('[ng-repeat="baz in days"]')                            | element.all(by.repeater('baz in days')) 
+| $('[ng-options="fruit for fruit in fruits"]')             | element.all(by.options('fruit for fruit in fruits')) 
+| $('#animals ul .pet')                                     | element.all(by.cssContainingText('#animals ul .pet')) 
+| $('[type="text"]:first')                                  | element.all(by.css('[type="text"]')).first() 
+| $('[type="text"]:last')                                   | element.all(by.css('[type="text"]')).last() 
+| $('a:contains("repeater")')                               | element.all(by.partialLinkText('repeater')) 
+| $('button:contains("text")')                              | element.all(by.partialButtonText('text')) 
+| $('#animals ul .pet:contains("dog")')                     | element.all(by.cssContainingText('#animals ul .pet', 'dog')) 
+| $('[ng-model="fruit"]').find('option')                    | element.all(by.model('fruit')).all(by.css('option') 
+| $('[ng-model="fruit"]').find('option:checked')            | element.all(by.model('fruit')).all(by.css('option:checked') 
+| $(':focus')                                               | browser.driver.switchTo().activeElement() 
+| $('[class="pet"]').attr('value')                          | element.all(by.css('[class="pet"]')).first().getAttribute('value') 
+| $('[class="pet"]:first').val()                            | element(by.css('[class="pet"]')).getAttribute('value') 
+| $('[type="text"]:first').val('')                          | element(by.css('[type="text"]')).clear() 
+| $('[type="text"]:first').val('codef0rmer')                | element(by.css('[type="text"]')).sendKeys('codef0rmer') 
+| $('[class="pet"]:first').text()                           | element(by.css('[class="pet"]')).getText() 
+| $('[class="pet"]:first').html()                           | element(by.css('[class="pet"]')).first().getInnerHtml() 
+| $('body').find('[class="pet"]')                           | element.all(by.css('body')).all(by.css('[class="pet"]')) 
+| $('[class="pet"]').get(0)                                 | element.all(by.css('[class="pet"]')).get(0) 
+| $('[class="pet"]:eq(0)')                                  | element.all('[class="pet"]').get(0).getWebElement()
+| $('[ng-repeat="baz in days"]').get(0)                     | element(by.repeater('baz in days').row(0)) 
+| $('[ng-repeat="baz in days"]').get(0).find('baz.initial') | element(by.repeater('baz in days').row(0).column('baz.initial')) 
+| $('[ng-repeat="baz in days"]').find('baz.initial')        | element.all(by.repeater('baz in days').column('baz.initial')) 
+| $('[ng-repeat="baz in days"]').find('baz.initial').get(1) | element.all(by.repeater('baz in days').column('baz.initial').row(1)) 
+| $('#checkboxes:first').is(':present')                     | element(by.id('checkboxes')).isPresent() 
+| $('#checkboxes:first').is(':visible')                     | element(by.id('checkboxes')).isDisplayed() 
+| $('#checkboxes:first').is(':enabled')                     | element(by.id('checkboxes')).isEnabled() 
+| $('#checkboxes:first').is(':checked')                     | element(by.id('checkboxes')).isSelected() 
+| $('{{greeting}}').eq(0)                                   | element.all(by.binding('greeting')).get(0).getWebElement()
+| var $el = $('iframe').contents().find('#checkboxes');     | browser.driver.switchTo().frame(0);
+|     expect($el.is(':present')).toBeTruthy();              |     expect(element(by.id('checkboxes')).isPresent()).toBeTruthy();
+|     $el.end();                                            |     browser.driver.switchTo().defaultContent();
 
 ## Todos
 - [ ] Support for .switchTo() popup windows
 - [ ] Support by.exactBinding and by.buttonText to map exact text instead of partial
 - [ ] Find a jQuery-like API for .switchTo().alert()
 - [ ] Support KEYS using .trigger method e.g. .trigger('enter') over .sendKeys(protractor.Key.ENTER)
-- [ ] Support complex selectors such as $p('body div:last span:eq(2) a:contains("Link")')
+- [ ] Support complex selectors such as $('body div:last span:eq(2) a:contains("Link")')
 
 ## Differences with jQuery
  * .length returns promise instead of number unlike jQuery
