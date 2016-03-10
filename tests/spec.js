@@ -349,13 +349,15 @@ describe('Proquery traversing: ', function() {
     expect($('[ng-repeat="baz in days"]').find('baz.initial').get(1).text()).toEqual(element(by.repeater('baz in days').column('baz.initial').row(1)).getText());
   });
 
-  it('Should support .is for presence, visibility, and check status', function() {
+  it('Should support .is for presence, visibility, check, and enable status', function() {
     expect($('#checkboxes').is(':present')).toBe(element.all(by.id('checkboxes')).first().isPresent());
     expect($('#checkboxes:first').is(':present')).toBe(element(by.id('checkboxes')).isPresent());
     expect($('#checkboxes').is(':visible')).toBe(element.all(by.id('checkboxes')).first().isDisplayed());
     expect($('#checkboxes:first').is(':visible')).toBe(element(by.id('checkboxes')).isDisplayed());
     expect($('#checkboxes').is(':checked')).toBe(element.all(by.id('checkboxes')).first().isSelected());
     expect($('#checkboxes:first').is(':checked')).toBe(element(by.id('checkboxes')).isSelected());
+    expect($('#checkboxes').is(':enabled')).toBe(element.all(by.id('checkboxes')).first().isEnabled());
+    expect($('#checkboxes:first').is(':enabled')).toBe(element(by.id('checkboxes')).isEnabled());
   });
 
   it('Should support .eq to get webElement', function() {

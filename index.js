@@ -166,6 +166,8 @@ Proquery.prototype.extend = function($p, opts, action) {
           return  $this.isDisplayed().then(function(isVisible) { return isVisible; }, function() { return false; });
         } else if (check === ':checked') {
           return $this.isSelected();
+        } else if (check == ':enabled') {
+          return $this.isEnabled().then(function(isEnabled) { return isEnabled; }, function() { return false; });
         }
       },
       filter = function(fn) {
