@@ -88,9 +88,7 @@ The second parameter is `useOriginal` and will match a single element instead.
 | $('#checkboxes:first').is(':enabled')                     | element(by.id('checkboxes')).isEnabled() 
 | $('#checkboxes:first').is(':checked')                     | element(by.id('checkboxes')).isSelected() 
 | $('{{greeting}}').eq(0)                                   | element.all(by.binding('greeting')).get(0).getWebElement()
-| var $el = $('iframe').contents().find('#checkboxes');     | browser.driver.switchTo().frame(0);
-|     expect($el.is(':present')).toBeTruthy();              |     expect(element(by.id('checkboxes')).isPresent()).toBeTruthy();
-|     $el.end();                                            |     browser.driver.switchTo().defaultContent();
+| var $doc = $('iframe').get(0).contents();<br>expect($doc.find('#checkboxes').is(':present')).toBeTruthy();<br>$doc.end(); | browser.driver.switchTo().frame(0);<br>expect(element(by.id('checkboxes')).isPresent()).toBeTruthy();<br>browser.driver.switchTo().defaultContent();
 
 ## Todos
 - [ ] Support for .switchTo() popup windows
